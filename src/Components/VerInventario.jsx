@@ -1,8 +1,8 @@
-import { useLotes } from '../Hooks/useLotes';
- // Asegúrate de ajustar la ruta donde guardes tu hook
+import { useLotes } from "../Hooks/useLotes";
+// Asegúrate de ajustar la ruta donde guardes tu hook
 
 export const VerInventario = () => {
-  const { lotes, error } = useLotes()
+  const { lotes, error } = useLotes();
 
   return (
     <div>
@@ -26,7 +26,11 @@ export const VerInventario = () => {
                   <td>{item.IdLote}</td>
                   <td>{item.Nombre}</td>
                   <td>{item.CantidadActual}</td>
-                  <td>{item.FechaCaducidad ? new Date(item.FechaCaducidad).toLocaleDateString() : 'N/A'}</td>
+                  <td>
+                    {item.FechaCaducidad
+                      ? new Date(item.FechaCaducidad).toLocaleDateString()
+                      : "N/A"}
+                  </td>
                   <td>{new Date(item.FechaEntrada).toLocaleDateString()}</td>
                 </tr>
               ))

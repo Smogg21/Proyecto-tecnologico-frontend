@@ -1,17 +1,16 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-
   const navigate = useNavigate();
 
   const goToOperador = () => {
-    navigate('/vistaOperador');
+    navigate("/vistaOperador");
   };
-  
-  return(
+
+  return (
     <div>
       <h1>Login</h1>
       <button onClick={goToOperador}>Log In</button>
     </div>
-  )
-}
+  );
+};

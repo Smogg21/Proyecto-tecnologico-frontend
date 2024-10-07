@@ -1,13 +1,12 @@
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Login } from './Views/Login';
-import { VistaOperador } from './Views/VistaOperador';
-import { NuevoLote } from './Views/NuevoLote';
-import { VistaInventario } from './Views/VistaInventario';
-
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Login } from "./Views/Login";
+import { VistaOperador } from "./Views/VistaOperador";
+import { NuevoLote } from "./Views/NuevoLote";
+import { VistaInventario } from "./Views/VistaInventario";
+import { NuevoProducto } from "./Views/NuevoProducto";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -15,9 +14,10 @@ function App() {
         <Route path="/vistaOperador" element={<VistaOperador />} />
         <Route path="/inventario" element={<VistaInventario />} />
         <Route path="/nuevoLote" element={<NuevoLote />} />
+        <Route path="/nuevoProducto" element={<NuevoProducto />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

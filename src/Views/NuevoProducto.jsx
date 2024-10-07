@@ -1,58 +1,95 @@
+// src/Views/NuevoProducto.jsx
 import { useState } from "react";
 import Select from "react-select";
-import { useProductos } from "../Hooks/useProductos";
+import { useCategorias } from "../Hooks/useCategorias";
 import { useNavigate } from "react-router-dom";
 
-export const NuevoLote = () => {
-  const nombres = useProductos();
-  const opciones = nombres.map((nombre) => ({
-    value: nombre.IdProducto,
-    label: nombre.Nombre,
-  }));
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [formValues, setFormValues] = useState({
-    fechaCaducidad: "",
-    fechaEntrada: "",
-    cantidad: "",
-    notas: "",
-  });
+export const NuevoProducto = () => {
+  const { categorias, loading, error: categoriasError } = useCategorias();
   const navigate = useNavigate();
+
+  // Transformar las categorías para react-select
+  const opcionesCategorias = categorias.map((categoria) => ({
+    value: categoria.IdCategoria,
+    label: categoria.Nombre,
+  }));
+
+  const [selectedCategoria, setSelectedCategoria] = useState(null);
+  const [formValues, setFormValues] = useState({
+    nombre: "",
+    descripcion: "",
+    stockMinimo: 0,
+    stockMaximo: 10,
+  });
+  const [mensaje, setMensaje] = useState(null);
+
   const goToInventory = () => {
     navigate("/inventario");
   };
-  const [mensaje, setMensaje] = useState(null);
 
   const handleSelectChange = (selected) => {
-    setSelectedOption(selected);
+    setSelectedCategoria(selected);
   };
 
   const handleInputChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Asegurarse de que stockMinimo y stockMaximo sean números
+    if (name === "stockMinimo" || name === "stockMaximo") {
+      setFormValues({ ...formValues, [name]: parseInt(value, 10) });
+    } else {
+      setFormValues({ ...formValues, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar que se haya seleccionado un producto
-    if (!selectedOption) {
+    // Validar campos requeridos
+    if (!formValues.nombre.trim()) {
       setMensaje({
         tipo: "error",
-        texto: "Por favor, selecciona un producto.",
+        texto: "El nombre del producto es requerido.",
+      });
+      return;
+    }
+
+    if (!selectedCategoria) {
+      setMensaje({
+        tipo: "error",
+        texto: "Por favor, selecciona una categoría.",
+      });
+      return;
+    }
+
+    // Validar stock mínimo y máximo
+    if (formValues.stockMinimo < 0) {
+      setMensaje({
+        tipo: "error",
+        texto: "El stock mínimo no puede ser negativo.",
+      });
+      return;
+    }
+
+    if (formValues.stockMaximo < formValues.stockMinimo) {
+      setMensaje({
+        tipo: "error",
+        texto: "El stock máximo debe ser mayor o igual al stock mínimo.",
       });
       return;
     }
 
     // Preparar los datos a enviar
     const dataToSend = {
-      producto: selectedOption.value, // El value seleccionado en react-select
-      fechaCaducidad: formValues.fechaCaducidad || null,
-      fechaEntrada: formValues.fechaEntrada || null, // Si está vacío, el servidor usará la fecha actual
-      cantidad: formValues.cantidad,
-      notas: formValues.notas || null,
+      Nombre: formValues.nombre,
+      Descripcion: formValues.descripcion || null,
+      IdCategoria: selectedCategoria.value,
+      StockMinimo: formValues.stockMinimo,
+      StockMaximo: formValues.stockMaximo,
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/lotes", {
+      const response = await fetch("http://localhost:5000/api/productos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,21 +101,21 @@ export const NuevoLote = () => {
         const result = await response.json();
         setMensaje({
           tipo: "exito",
-          texto: `Lote creado con éxito. ID: ${result.IdLote}`,
+          texto: `Producto creado con éxito. ID: ${result.IdProducto}`,
         });
         // Resetear el formulario
-        setSelectedOption(null);
+        setSelectedCategoria(null);
         setFormValues({
-          fechaCaducidad: "",
-          fechaEntrada: "",
-          cantidad: "",
-          notas: "",
+          nombre: "",
+          descripcion: "",
+          stockMinimo: 0,
+          stockMaximo: 10,
         });
       } else {
         const error = await response.json();
         setMensaje({
           tipo: "error",
-          texto: error.message || "Error al crear el lote.",
+          texto: error.message || "Error al crear el producto.",
         });
       }
     } catch (error) {
@@ -93,12 +130,12 @@ export const NuevoLote = () => {
   const selectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a", // Cambiar el fondo del select
+      backgroundColor: "#4a4a4a",
       color: "white",
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22", // Cambiar el fondo del menú desplegable
+      backgroundColor: "#221f22",
       color: "white",
     }),
     option: (provided, state) => ({
@@ -107,16 +144,16 @@ export const NuevoLote = () => {
         ? "#221f22"
         : state.isFocused
         ? "black"
-        : "gray", // Fondo de las opciones
+        : "gray",
       color: "white",
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto seleccionado
+      color: "white",
     }),
     input: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto que escribes en el input
+      color: "white",
     }),
   };
 
@@ -131,7 +168,7 @@ export const NuevoLote = () => {
         borderRadius: "8px",
       }}
     >
-      <h1>Nuevo Lote</h1>
+      <h1>Nuevo Producto</h1>
       {mensaje && (
         <div
           style={{
@@ -146,59 +183,31 @@ export const NuevoLote = () => {
           {mensaje.texto}
         </div>
       )}
+      {categoriasError && (
+        <div
+          style={{
+            padding: "10px",
+            marginBottom: "15px",
+            color: "red",
+            border: "1px solid red",
+            borderRadius: "4px",
+            backgroundColor: "#f8d7da",
+          }}
+        >
+          {categoriasError}
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         style={{ display: "flex", flexDirection: "column" }}
       >
-        <label style={{ marginBottom: "5px" }}>Producto</label>
-        <Select
-          options={opciones}
-          value={selectedOption}
-          onChange={handleSelectChange}
-          styles={selectStyles}
-          placeholder="Busca un Producto"
-        />
-
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Caducidad
-        </label>
+        <label style={{ marginBottom: "5px" }}>Nombre</label>
         <input
-          type="date"
-          name="fechaCaducidad"
-          value={formValues.fechaCaducidad}
-          onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Entrada
-        </label>
-        <input
-          type="date"
-          name="fechaEntrada"
-          value={formValues.fechaEntrada}
-          onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Cantidad
-        </label>
-        <input
-          type="number"
-          name="cantidad"
-          value={formValues.cantidad}
+          type="text"
+          name="nombre"
+          value={formValues.nombre}
           onChange={handleInputChange}
           required
-          min="0"
           style={{
             padding: "8px",
             borderRadius: "4px",
@@ -210,13 +219,62 @@ export const NuevoLote = () => {
           Descripción
         </label>
         <textarea
-          name="notas"
-          rows={5}
-          placeholder="Notas"
-          value={formValues.notas}
+          name="descripcion"
+          rows={4}
+          placeholder="Descripción del producto"
+          value={formValues.descripcion}
           onChange={handleInputChange}
           style={{
             resize: "none",
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
+          Categoría
+        </label>
+        {loading ? (
+          <p>Cargando categorías...</p>
+        ) : (
+          <Select
+            options={opcionesCategorias}
+            value={selectedCategoria}
+            onChange={handleSelectChange}
+            styles={selectStyles}
+            placeholder="Selecciona una categoría"
+          />
+        )}
+
+        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
+          Stock Mínimo
+        </label>
+        <input
+          type="number"
+          name="stockMinimo"
+          value={formValues.stockMinimo}
+          onChange={handleInputChange}
+          required
+          min="0"
+          style={{
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
+          Stock Máximo
+        </label>
+        <input
+          type="number"
+          name="stockMaximo"
+          value={formValues.stockMaximo}
+          onChange={handleInputChange}
+          required
+          min={formValues.stockMinimo}
+          style={{
             padding: "8px",
             borderRadius: "4px",
             border: "1px solid #ccc",
@@ -235,7 +293,7 @@ export const NuevoLote = () => {
             cursor: "pointer",
           }}
         >
-          Enviar
+          Crear Producto
         </button>
       </form>
       <button
