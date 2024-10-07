@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { VerInventario } from "../Components/VerInventario";
+import {  VerMovimientosInventario } from "../Components/VerMovimientosInventario";
 
-export const VistaInventario = () => {
+
+export const VistaMovimientos = () => {
   const navigate = useNavigate();
   const regresar = () => {
     navigate("/VistaOperador");
   };
 
+
   return (
     <div>
-      <VerInventario />
-      <button onClick={regresar} >
+      <VerMovimientosInventario />
+      <button onClick={regresar}>
         Regresar
       </button>
+
     </div>
   );
 };

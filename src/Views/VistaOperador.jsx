@@ -9,6 +9,12 @@ export const VistaOperador = () => {
   const goToNuevoLote = () => {
     navigate("/nuevoLote");
   };
+  const goToMovimientoInventario = () => {
+    navigate("/registrarMovimiento");
+  };
+  const goToVerMovimientos = () => {
+    navigate("/verMovimientos");
+  };
 
   return (
     <div>
@@ -16,6 +22,16 @@ export const VistaOperador = () => {
       <br />
       <br />
       <button onClick={goToNuevoLote}>Registrar Nuevo Lote</button>
+      <br />
+      <br />
+      <button onClick={goToMovimientoInventario} >
+        Registrar Movimiento Inventario
+      </button>
+      <br />
+      <br />
+      <button onClick={goToVerMovimientos} >
+        Ver Movimiento Inventario
+      </button>
     </div>
   );
 };

@@ -298,15 +298,6 @@ export const NuevoProducto = () => {
       </form>
       <button
         onClick={goToInventory}
-        style={{
-          marginTop: "10px",
-          padding: "10px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
       >
         Ir a Inventario
       </button>

@@ -5,6 +5,9 @@ import { VistaOperador } from "./Views/VistaOperador";
 import { NuevoLote } from "./Views/NuevoLote";
 import { VistaInventario } from "./Views/VistaInventario";
 import { NuevoProducto } from "./Views/NuevoProducto";
+import { RegistrarMovimiento } from "./Views/RegistrarMovimiento";
+import { VistaMovimientos } from "./Views/VistaMovimientos";
+
 
 function App() {
   return (
@@ -15,6 +18,10 @@ function App() {
         <Route path="/inventario" element={<VistaInventario />} />
         <Route path="/nuevoLote" element={<NuevoLote />} />
         <Route path="/nuevoProducto" element={<NuevoProducto />} />
+        <Route path="/registrarMovimiento" element={<RegistrarMovimiento />} />
+        <Route path="/verMovimientos" element={<VistaMovimientos />} />
+
+
       </Routes>
     </BrowserRouter>
   );

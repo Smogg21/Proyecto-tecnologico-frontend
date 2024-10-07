@@ -1,58 +1,54 @@
 import { useState } from "react";
 import Select from "react-select";
-import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
+import { useLotes } from "../Hooks/useLotes";
 
-export const NuevoLote = () => {
-  const nombres = useProductos();
-  const opciones = nombres.map((nombre) => ({
-    value: nombre.IdProducto,
-    label: nombre.Nombre,
-  }));
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [formValues, setFormValues] = useState({
-    fechaCaducidad: "",
-    fechaEntrada: "",
-    cantidad: "",
-    notas: "",
-  });
-  const navigate = useNavigate();
-  const regresar = () => {
-    navigate("/VistaOperador");
-  };
+export const RegistrarMovimiento = () => {
+  const [selectedLote, setSelectedLote] = useState(null);
+  const [tipoMovimiento, setTipoMovimiento] = useState(null);
+  const [cantidad, setCantidad] = useState("");
+  const [notas, setNotas] = useState("");
   const [mensaje, setMensaje] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSelectChange = (selected) => {
-    setSelectedOption(selected);
-  };
+  // Asumiendo que tienes un sistema de autenticación y puedes obtener el IdUsuario
+  const IdUsuario = 1; // Reemplaza esto con el IdUsuario real
 
-  const handleInputChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
+  const {lotes} = useLotes()
+  const lotesOptions = lotes.map((lote) => ({
+    value: lote.IdLote,
+    label: `Lote ${lote.IdLote} - ${lote.Nombre}`,
+  }));
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar que se haya seleccionado un producto
-    if (!selectedOption) {
-      setMensaje({
-        tipo: "error",
-        texto: "Por favor, selecciona un producto.",
-      });
+    // Validaciones básicas
+    if (!selectedLote) {
+      setMensaje({ tipo: "error", texto: "Por favor, selecciona un lote." });
+      return;
+    }
+    if (!tipoMovimiento) {
+      setMensaje({ tipo: "error", texto: "Por favor, selecciona un tipo de movimiento." });
+      return;
+    }
+    if (!cantidad || cantidad <= 0) {
+      setMensaje({ tipo: "error", texto: "Por favor, ingresa una cantidad válida." });
       return;
     }
 
-    // Preparar los datos a enviar
+    // Preparar datos para enviar
     const dataToSend = {
-      producto: selectedOption.value, // El value seleccionado en react-select
-      fechaCaducidad: formValues.fechaCaducidad || null,
-      fechaEntrada: formValues.fechaEntrada || null, // Si está vacío, el servidor usará la fecha actual
-      cantidad: formValues.cantidad,
-      notas: formValues.notas || null,
+      IdLote: selectedLote.value,
+      TipoMovimiento: tipoMovimiento.value,
+      Cantidad: parseInt(cantidad, 10),
+      Notas: notas || null,
+      IdUsuario: IdUsuario,
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/lotes", {
+      const response = await fetch("http://localhost:5000/api/movimientos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,21 +60,18 @@ export const NuevoLote = () => {
         const result = await response.json();
         setMensaje({
           tipo: "exito",
-          texto: `Lote creado con éxito. ID: ${result.IdLote}`,
+          texto: `Movimiento registrado con éxito. ID: ${result.IdMovimiento}`,
         });
-        // Resetear el formulario
-        setSelectedOption(null);
-        setFormValues({
-          fechaCaducidad: "",
-          fechaEntrada: "",
-          cantidad: "",
-          notas: "",
-        });
+        // Resetear formulario
+        setSelectedLote(null);
+        setTipoMovimiento(null);
+        setCantidad("");
+        setNotas("");
       } else {
         const error = await response.json();
         setMensaje({
           tipo: "error",
-          texto: error.message || "Error al crear el lote.",
+          texto: error.message || "Error al registrar el movimiento.",
         });
       }
     } catch (error) {
@@ -90,15 +83,20 @@ export const NuevoLote = () => {
     }
   };
 
+  const tipoMovimientoOptions = [
+    { value: "Entrada", label: "Entrada" },
+    { value: "Salida", label: "Salida" },
+  ];
+
   const selectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a", // Cambiar el fondo del select
+      backgroundColor: "#4a4a4a",
       color: "white",
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22", // Cambiar el fondo del menú desplegable
+      backgroundColor: "#221f22",
       color: "white",
     }),
     option: (provided, state) => ({
@@ -107,16 +105,16 @@ export const NuevoLote = () => {
         ? "#221f22"
         : state.isFocused
         ? "black"
-        : "gray", // Fondo de las opciones
+        : "gray",
       color: "white",
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto seleccionado
+      color: "white",
     }),
     input: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto que escribes en el input
+      color: "white",
     }),
   };
 
@@ -131,7 +129,7 @@ export const NuevoLote = () => {
         borderRadius: "8px",
       }}
     >
-      <h1>Nuevo Lote</h1>
+      <h1>Registrar Movimiento de Inventario</h1>
       {mensaje && (
         <div
           style={{
@@ -146,47 +144,25 @@ export const NuevoLote = () => {
           {mensaje.texto}
         </div>
       )}
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginBottom: "5px" }}>Producto</label>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+        <label style={{ marginBottom: "5px" }}>Lote</label>
         <Select
-          options={opciones}
-          value={selectedOption}
-          onChange={handleSelectChange}
+          options={lotesOptions}
+          value={selectedLote}
+          onChange={setSelectedLote}
           styles={selectStyles}
-          placeholder="Busca un Producto"
+          placeholder="Selecciona un lote"
         />
 
         <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Caducidad
+          Tipo de Movimiento
         </label>
-        <input
-          type="date"
-          name="fechaCaducidad"
-          value={formValues.fechaCaducidad}
-          onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Entrada
-        </label>
-        <input
-          type="date"
-          name="fechaEntrada"
-          value={formValues.fechaEntrada}
-          onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+        <Select
+          options={tipoMovimientoOptions}
+          value={tipoMovimiento}
+          onChange={setTipoMovimiento}
+          styles={selectStyles}
+          placeholder="Selecciona el tipo de movimiento"
         />
 
         <label style={{ marginTop: "10px", marginBottom: "5px" }}>
@@ -195,10 +171,10 @@ export const NuevoLote = () => {
         <input
           type="number"
           name="cantidad"
-          value={formValues.cantidad}
-          onChange={handleInputChange}
+          value={cantidad}
+          onChange={(e) => setCantidad(e.target.value)}
           required
-          min="0"
+          min="1"
           style={{
             padding: "8px",
             borderRadius: "4px",
@@ -207,14 +183,14 @@ export const NuevoLote = () => {
         />
 
         <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Descripción
+          Notas
         </label>
         <textarea
           name="notas"
           rows={5}
           placeholder="Notas"
-          value={formValues.notas}
-          onChange={handleInputChange}
+          value={notas}
+          onChange={(e) => setNotas(e.target.value)}
           style={{
             resize: "none",
             padding: "8px",
@@ -235,11 +211,12 @@ export const NuevoLote = () => {
             cursor: "pointer",
           }}
         >
-          Enviar
+          Registrar Movimiento
         </button>
       </form>
       <button
-        onClick={regresar}
+        onClick={() => navigate("/VistaOperador")}
+
       >
         Regresar
       </button>

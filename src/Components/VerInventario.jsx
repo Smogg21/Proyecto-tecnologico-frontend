@@ -16,7 +16,7 @@ export const VerInventario = () => {
               <th>Nombre</th>
               <th>Cantidad Actual</th>
               <th>Fecha de Caducidad</th>
-              <th>Fecha de Entrada</th>
+              <th>Fecha de Entrada Inicial</th>
             </tr>
           </thead>
           <tbody>
