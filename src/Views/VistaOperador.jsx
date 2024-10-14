@@ -1,7 +1,15 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const VistaOperador = () => {
   const navigate = useNavigate();
+  const {logout} = useContext(AuthContext);
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
 
   const goToInventory = () => {
     navigate("/inventario");
@@ -18,7 +26,12 @@ export const VistaOperador = () => {
 
   return (
     <div>
-      <button onClick={goToInventory}>Ir a Inventario</button>
+      <button onClick={goToInventory}>Ver Inventario</button>
+      <br />
+      <br />
+      <button onClick={goToVerMovimientos} >
+        Ver Movimiento Inventario
+      </button>
       <br />
       <br />
       <button onClick={goToNuevoLote}>Registrar Nuevo Lote</button>
@@ -29,9 +42,13 @@ export const VistaOperador = () => {
       </button>
       <br />
       <br />
-      <button onClick={goToVerMovimientos} >
-        Ver Movimiento Inventario
+      <button onClick={() => navigate("/nuevoProducto")} >
+        Registrar Nuevo Producto
       </button>
+      <br />
+      <br />
+      <button onClick={handleLogout}>Cerrar Sesión</button>
+      
     </div>
   );
 };
