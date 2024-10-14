@@ -31,7 +31,7 @@ export const VerMovimientosInventario = () => {
                   <td>{item.TipoMovimiento}</td>
                   <td>{item.Cantidad}</td>
                   <td>
-                    {new Date(item.FechaMovimiento).toLocaleDateString()}
+                    {new Date(item.FechaMovimiento).toLocaleString()}
                   </td>
                   <td>{item.Notas || 'N/A'}</td>
                   <td>{item.IdUsuario}</td>

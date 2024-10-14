@@ -17,6 +17,7 @@ export const VerInventario = () => {
               <th>Cantidad Actual</th>
               <th>Fecha de Caducidad</th>
               <th>Fecha de Entrada Inicial</th>
+              <th>Usuario</th>
             </tr>
           </thead>
           <tbody>
@@ -31,7 +32,8 @@ export const VerInventario = () => {
                       ? new Date(item.FechaCaducidad).toLocaleDateString()
                       : "N/A"}
                   </td>
-                  <td>{new Date(item.FechaEntrada).toLocaleDateString()}</td>
+                  <td>{new Date(item.FechaEntrada).toLocaleString()}</td>
+                  <td>{item.IdUsuario}</td>
                 </tr>
               ))
             ) : (

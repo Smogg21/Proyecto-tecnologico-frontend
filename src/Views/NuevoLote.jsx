@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Select from "react-select";
 import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const NuevoLote = () => {
   const nombres = useProductos();
@@ -9,12 +10,14 @@ export const NuevoLote = () => {
     value: nombre.IdProducto,
     label: nombre.Nombre,
   }));
+  const { auth } = useContext(AuthContext)
   const [selectedOption, setSelectedOption] = useState(null);
   const [formValues, setFormValues] = useState({
     fechaCaducidad: "",
     fechaEntrada: "",
     cantidad: "",
     notas: "",
+    idUsuario: "",
   });
   const navigate = useNavigate();
   const regresar = () => {
@@ -41,7 +44,7 @@ export const NuevoLote = () => {
       });
       return;
     }
-
+    const usuario = auth.user.IdUsuario;
     // Preparar los datos a enviar
     const dataToSend = {
       producto: selectedOption.value, // El value seleccionado en react-select
@@ -49,6 +52,7 @@ export const NuevoLote = () => {
       fechaEntrada: formValues.fechaEntrada || null, // Si está vacío, el servidor usará la fecha actual
       cantidad: formValues.cantidad,
       notas: formValues.notas || null,
+      idUsuario: usuario,
     };
 
     try {
@@ -178,7 +182,8 @@ export const NuevoLote = () => {
           Fecha de Entrada
         </label>
         <input
-          type="date"
+          type="datetime-local"
+          step="1"
           name="fechaEntrada"
           value={formValues.fechaEntrada}
           onChange={handleInputChange}
@@ -222,6 +227,7 @@ export const NuevoLote = () => {
             border: "1px solid #ccc",
           }}
         />
+        
 
         <button
           type="submit"

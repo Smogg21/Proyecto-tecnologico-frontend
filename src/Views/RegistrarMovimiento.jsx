@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { useLotes } from "../Hooks/useLotes";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const RegistrarMovimiento = () => {
   const [selectedLote, setSelectedLote] = useState(null);
@@ -10,9 +11,10 @@ export const RegistrarMovimiento = () => {
   const [notas, setNotas] = useState("");
   const [mensaje, setMensaje] = useState(null);
   const navigate = useNavigate();
-
+  const { auth } = useContext(AuthContext);
   // Asumiendo que tienes un sistema de autenticación y puedes obtener el IdUsuario
-  const IdUsuario = 1; // Reemplaza esto con el IdUsuario real
+  
+  const IdUsuario = auth.user.IdUsuario; // Reemplaza esto con el IdUsuario real
 
   const {lotes} = useLotes()
   const lotesOptions = lotes.map((lote) => ({
