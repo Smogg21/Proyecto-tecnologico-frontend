@@ -1,14 +1,17 @@
+// src/Components/VerMovimientosInventario.jsx
+
 import { useMovimientos } from '../Hooks/useMovimientos';
+import styles from './VerMovimientosInventario.module.css';
 
 export const VerMovimientosInventario = () => {
   const { movimientos, error } = useMovimientos();
 
   return (
-    <div>
+    <div className={styles.tableContainer}>
       {error ? (
-        <p>{error}</p>
+        <p className={styles.error} role="alert">{error}</p>
       ) : (
-        <table border="1">
+        <table className={styles.table} aria-label="Movimientos de Inventario">
           <thead>
             <tr>
               <th>Id Movimiento</th>
@@ -39,7 +42,9 @@ export const VerMovimientosInventario = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7">No hay datos disponibles</td>
+                <td colSpan="8" className={styles.noData}>
+                  No hay datos disponibles
+                </td>
               </tr>
             )}
           </tbody>
