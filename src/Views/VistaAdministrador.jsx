@@ -1,31 +1,35 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
-export const VistaAdministrador = () =>{
+export const VistaAdministrador = () => {
   const navigate = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
-
-  return(
+  return (
     <div>
       <h1>VistaGerente</h1>
-      <button onClick={() => navigate("/vistaOperador")} >
-        Ir a Vista Operador
-      </button>
-      <br />
-      <br />
-      <button onClick={() => navigate("/vistaGerente")} >
-        Ir a Vista Gerente
-      </button>
-      <br />
-      <br />
-      <button onClick={handleLogout}>Cerrar Sesión</button>
-
-    </div>
-  )
-}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            margin: "20px",
+            
+          }}
+        >
+          <button onClick={() => navigate("/vistaOperador")} className="button1">
+            Ir a Vista Operador
+          </button>
+          <button onClick={() => navigate("/vistaGerente")}  className="button1">
+            Ir a Vista Gerente
+          </button>
+        </div>
+        <button onClick={handleLogout}>Cerrar Sesión</button>
+      </div>
+  );
+};

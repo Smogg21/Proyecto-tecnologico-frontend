@@ -23,9 +23,6 @@ export const NuevoProducto = () => {
   });
   const [mensaje, setMensaje] = useState(null);
 
-  const goToInventory = () => {
-    navigate("/inventario");
-  };
 
   const handleSelectChange = (selected) => {
     setSelectedCategoria(selected);
@@ -297,9 +294,9 @@ export const NuevoProducto = () => {
         </button>
       </form>
       <button
-        onClick={goToInventory}
+         onClick={() => navigate("/vistaOperador")}
       >
-        Ir a Inventario
+        Regresar
       </button>
     </div>
   );

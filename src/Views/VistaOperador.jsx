@@ -4,12 +4,11 @@ import { AuthContext } from "../contexts/AuthContext";
 
 export const VistaOperador = () => {
   const navigate = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
-
 
   const goToInventory = () => {
     navigate("/inventario");
@@ -26,29 +25,41 @@ export const VistaOperador = () => {
 
   return (
     <div>
-      <button onClick={goToInventory}>Ver Inventario</button>
-      <br />
-      <br />
-      <button onClick={goToVerMovimientos} >
-        Ver Movimiento Inventario
-      </button>
-      <br />
-      <br />
-      <button onClick={goToNuevoLote}>Registrar Nuevo Lote</button>
-      <br />
-      <br />
-      <button onClick={goToMovimientoInventario} >
-        Registrar Movimiento Inventario
-      </button>
-      <br />
-      <br />
-      <button onClick={() => navigate("/nuevoProducto")} >
-        Registrar Nuevo Producto
-      </button>
-      <br />
-      <br />
-      <button onClick={handleLogout}>Cerrar Sesión</button>
-      
+      <h1>Vista operador</h1>
+      <div >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            margin: "20px",
+          }}
+        >
+          <button onClick={goToInventory} className="button1">Ver Inventario</button>
+          <button onClick={goToVerMovimientos}  className="button1">
+            Ver Movimiento Inventario
+          </button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            margin: "20px",
+          }}
+        >
+          <button onClick={goToNuevoLote} className="button2">Registrar Nuevo Lote</button>
+
+          <button onClick={goToMovimientoInventario} className="button2">
+            Registrar Movimiento Inventario
+          </button>
+
+          <button onClick={() => navigate("/nuevoProducto")} className="button2">
+            Registrar Nuevo Producto
+          </button>
+        </div>
+      </div>
+      <button onClick={handleLogout} style={{ marginTop: "10px" }}>Cerrar Sesión</button>
     </div>
   );
 };
