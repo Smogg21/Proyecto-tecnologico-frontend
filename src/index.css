@@ -79,6 +79,20 @@ button:hover {
 .button2:hover {
   border-color: #646cff;
 }
+.button3{
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color border-color 0.25s;
+}
+.button3:hover {
+  background-color: #02772b;
+  border-color: #646cff;
+}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

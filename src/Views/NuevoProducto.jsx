@@ -278,16 +278,7 @@ export const NuevoProducto = () => {
         />
 
         <button
-          type="submit"
-          style={{
-            marginTop: "15px",
-            padding: "10px",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          type="submit" className="button3"
         >
           Crear Producto
         </button>

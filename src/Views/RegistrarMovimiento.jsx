@@ -209,15 +209,7 @@ export const RegistrarMovimiento = () => {
 
         <button
           type="submit"
-          style={{
-            marginTop: "15px",
-            padding: "10px",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          className="button3"
         >
           Registrar Movimiento
         </button>
