@@ -10,7 +10,7 @@ export const NuevoLote = () => {
     value: nombre.IdProducto,
     label: nombre.Nombre,
   }));
-  const { auth } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext);
   const [selectedOption, setSelectedOption] = useState(null);
   const [formValues, setFormValues] = useState({
     fechaCaducidad: "",
@@ -227,7 +227,6 @@ export const NuevoLote = () => {
             border: "1px solid #ccc",
           }}
         />
-        
 
         <button
           type="submit"
@@ -243,12 +242,8 @@ export const NuevoLote = () => {
         >
           Enviar
         </button>
+        <button onClick={regresar} style={{ marginTop: "20px" }}>Regresar</button>
       </form>
-      <button
-        onClick={regresar}
-      >
-        Regresar
-      </button>
     </div>
   );
 };

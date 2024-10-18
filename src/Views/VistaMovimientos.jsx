@@ -12,7 +12,7 @@ export const VistaMovimientos = () => {
   return (
     <div>
       <VerMovimientosInventario />
-      <button onClick={regresar}>
+      <button onClick={regresar} style={{ marginTop: "20px" }}>
         Regresar
       </button>
 

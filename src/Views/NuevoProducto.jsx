@@ -23,7 +23,6 @@ export const NuevoProducto = () => {
   });
   const [mensaje, setMensaje] = useState(null);
 
-
   const handleSelectChange = (selected) => {
     setSelectedCategoria(selected);
   };
@@ -292,12 +291,8 @@ export const NuevoProducto = () => {
         >
           Crear Producto
         </button>
+        <button onClick={() => navigate("/vistaOperador")} style={{ marginTop: "20px" }}>Regresar</button>
       </form>
-      <button
-         onClick={() => navigate("/vistaOperador")}
-      >
-        Regresar
-      </button>
     </div>
   );
 };

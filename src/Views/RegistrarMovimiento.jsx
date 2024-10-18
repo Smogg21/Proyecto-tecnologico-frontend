@@ -13,15 +13,14 @@ export const RegistrarMovimiento = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   // Asumiendo que tienes un sistema de autenticación y puedes obtener el IdUsuario
-  
+
   const IdUsuario = auth.user.IdUsuario; // Reemplaza esto con el IdUsuario real
 
-  const {lotes} = useLotes()
+  const { lotes } = useLotes();
   const lotesOptions = lotes.map((lote) => ({
     value: lote.IdLote,
     label: `Lote ${lote.IdLote} - ${lote.Nombre}`,
   }));
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,11 +31,17 @@ export const RegistrarMovimiento = () => {
       return;
     }
     if (!tipoMovimiento) {
-      setMensaje({ tipo: "error", texto: "Por favor, selecciona un tipo de movimiento." });
+      setMensaje({
+        tipo: "error",
+        texto: "Por favor, selecciona un tipo de movimiento.",
+      });
       return;
     }
     if (!cantidad || cantidad <= 0) {
-      setMensaje({ tipo: "error", texto: "Por favor, ingresa una cantidad válida." });
+      setMensaje({
+        tipo: "error",
+        texto: "Por favor, ingresa una cantidad válida.",
+      });
       return;
     }
 
@@ -146,7 +151,10 @@ export const RegistrarMovimiento = () => {
           {mensaje.texto}
         </div>
       )}
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column" }}
+      >
         <label style={{ marginBottom: "5px" }}>Lote</label>
         <Select
           options={lotesOptions}
@@ -184,9 +192,7 @@ export const RegistrarMovimiento = () => {
           }}
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Notas
-        </label>
+        <label style={{ marginTop: "10px", marginBottom: "5px" }}>Notas</label>
         <textarea
           name="notas"
           rows={5}
@@ -215,13 +221,8 @@ export const RegistrarMovimiento = () => {
         >
           Registrar Movimiento
         </button>
+        <button onClick={() => navigate("/VistaOperador")} style={{ marginTop: "20px" }}>Regresar</button>
       </form>
-      <button
-        onClick={() => navigate("/VistaOperador")}
-
-      >
-        Regresar
-      </button>
     </div>
   );
 };

@@ -10,7 +10,7 @@ export const VistaInventario = () => {
   return (
     <div>
       <VerInventario />
-      <button onClick={regresar} >
+      <button onClick={regresar} style={{ marginTop: "20px" }}>
         Regresar
       </button>
     </div>
