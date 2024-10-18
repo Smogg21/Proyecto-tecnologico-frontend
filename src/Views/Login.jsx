@@ -42,11 +42,11 @@ export const Login = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{width: '310px'}}> 
       <h2>Iniciar Sesión</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
+      
+      <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', border: '1px solid #ccc', padding: '10px'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <label>Usuario:</label>
           <input
             type="text"
@@ -55,7 +55,7 @@ export const Login = () => {
             required
           />
         </div>
-        <div>
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <label>Contraseña:</label>
           <input
             type="password"
@@ -66,6 +66,7 @@ export const Login = () => {
         </div>
         <br />
         <button type="submit">Iniciar Sesión</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>
   );
