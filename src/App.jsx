@@ -12,6 +12,7 @@ import { PrivateRoute } from "./Components/PrivateRoute";
 import { VistaGerente } from "./Views/VistaGerente";
 import { Unauthorized } from "./Views/Unauthorized";
 import { VistaAdministrador } from "./Views/VistaAdministrador";
+import { NuevaContraseña } from "./Views/NuevaContraseña";
 
 function App() {
   return (
@@ -26,7 +27,10 @@ function App() {
             </PublicRoute>
           }
         />
+
+
         <Route path="/unauthorized" element={<Unauthorized />} />
+        
         {/* Rutas Protegidas */}
         <Route
           path="/vistaOperador"
@@ -92,6 +96,15 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/nuevaContraseña"
+          element={
+            <PrivateRoute roles={[1]}>
+              <NuevaContraseña />
+            </PrivateRoute>
+          }
+        />
+        
       </Routes>
     </BrowserRouter>
   );

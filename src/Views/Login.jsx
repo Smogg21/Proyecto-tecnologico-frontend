@@ -68,6 +68,7 @@ export const Login = () => {
         <button type="submit">Iniciar Sesión</button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
+
     </div>
   );
 };
