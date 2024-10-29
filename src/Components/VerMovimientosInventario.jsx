@@ -17,6 +17,7 @@ export const VerMovimientosInventario = () => {
               <th>Id Movimiento</th>
               <th>Id Lote</th>
               <th>Producto</th>
+              <th>Número de serie</th>
               <th>Tipo Movimiento</th>
               <th>Cantidad</th>
               <th>Fecha Movimiento</th>
@@ -31,6 +32,7 @@ export const VerMovimientosInventario = () => {
                   <td>{item.IdMovimiento}</td>
                   <td>{item.IdLote}</td>
                   <td>{item.Nombre}</td>
+                  <td>{item.NumSerie}</td>
                   <td>{item.TipoMovimiento}</td>
                   <td>{item.Cantidad}</td>
                   <td>
