@@ -37,24 +37,36 @@ export const RegistrarMovimiento = () => {
     setSelectedLote(lote);
     // Debugging: Verificar el lote seleccionado
   };
+  
+
+  const handleTipoMovimientoChange = (tipo) => {
+    setTipoMovimiento(tipo);
+    setSelectedSerialNumber(null); // Resetear número de serie seleccionado
+  };
 
   // useEffect para manejar cambios en la selección de lote
   useEffect(() => {
-    if (selectedLote && selectedLote.hasNumSerie) {
-      // Establecer cantidad en "1" para productos con número de serie
-      setCantidad("1");
+    const fetchSerialNumbers = async () => {
+      if (selectedLote && selectedLote.hasNumSerie && tipoMovimiento) {
+        // Establecer cantidad en "1" para productos con número de serie
+        setCantidad("1");
 
-      // Función para obtener los números de serie del lote seleccionado
-      const fetchSerialNumbers = async () => {
+        // Determinar el estado a buscar según el tipo de movimiento
+        const estado =
+          tipoMovimiento.value === "Salida" ? "Activo" : "Inactivo";
+
+        // Obtener los números de serie filtrados por estado
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/lotes/${selectedLote.value}/serial-numbers`
+            `http://localhost:5000/api/lotes/${selectedLote.value}/serial-numbers`,
+            {
+              params: { estado },
+            }
           );
           const serialOptions = response.data.map((item) => ({
             value: item.NumSerie,
             label: item.NumSerie,
           }));
-
           setSerialNumbers(serialOptions);
         } catch (error) {
           console.error("Error fetching serial numbers:", error);
@@ -63,20 +75,23 @@ export const RegistrarMovimiento = () => {
             texto: "Error al obtener los números de serie.",
           });
         }
-      };
-      fetchSerialNumbers();
-    } else {
-      setSerialNumbers([]);
-      setSelectedSerialNumber(null);
-      // Resetear cantidad cuando no se maneja número de serie
-      setCantidad("");
-    }
-  }, [selectedLote]);
+      } else {
+        // Resetear si no hay lote o tipo de movimiento seleccionado
+        setSerialNumbers([]);
+        setSelectedSerialNumber(null);
+        if (!selectedLote || !selectedLote.hasNumSerie) {
+          setCantidad("");
+        }
+      }
+    };
+
+    fetchSerialNumbers();
+  }, [selectedLote, tipoMovimiento]);
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validaciones básicas
     if (!selectedLote) {
       setMensaje({ tipo: "error", texto: "Por favor, selecciona un lote." });
@@ -89,7 +104,7 @@ export const RegistrarMovimiento = () => {
       });
       return;
     }
-
+  
     const cantidadInt = parseInt(cantidad, 10);
     if (isNaN(cantidadInt) || cantidadInt <= 0) {
       setMensaje({
@@ -98,7 +113,7 @@ export const RegistrarMovimiento = () => {
       });
       return;
     }
-
+  
     if (selectedLote.hasNumSerie) {
       if (!selectedSerialNumber) {
         setMensaje({
@@ -107,7 +122,7 @@ export const RegistrarMovimiento = () => {
         });
         return;
       }
-      // Para productos con número de serie, la cantidad debe ser 1
+      // La cantidad debe ser 1 para productos con número de serie
       if (cantidadInt !== 1) {
         setMensaje({
           tipo: "error",
@@ -116,7 +131,7 @@ export const RegistrarMovimiento = () => {
         return;
       }
     }
-
+  
     // Preparar datos para enviar al backend
     const dataToSend = {
       IdLote: selectedLote.value,
@@ -242,7 +257,7 @@ export const RegistrarMovimiento = () => {
         <Select
           options={tipoMovimientoOptions}
           value={tipoMovimiento}
-          onChange={setTipoMovimiento}
+          onChange={handleTipoMovimientoChange}
           styles={selectStyles}
           placeholder="Selecciona el tipo de movimiento"
         />
@@ -258,7 +273,7 @@ export const RegistrarMovimiento = () => {
         />
 
         {/* Selector de Número de Serie, solo si el lote maneja números de serie */}
-        {selectedLote && selectedLote.hasNumSerie && (
+        {selectedLote && selectedLote.hasNumSerie && tipoMovimiento && (
           <>
             <label style={{ marginTop: "10px", marginBottom: "5px" }}>
               Número de Serie
