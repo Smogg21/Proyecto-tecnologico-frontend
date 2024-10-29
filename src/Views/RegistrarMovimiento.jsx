@@ -27,7 +27,7 @@ export const RegistrarMovimiento = () => {
   // Mapeo de los lotes para react-select
   const lotesOptions = lotes.map((lote) => ({
     value: lote.IdLote,
-    label: `Lote ${lote.IdLote} - ${lote.Nombre} - Cantidad: ${lote.CantidadActual}`,
+    label: `Lote ${lote.IdLote} - ${lote.Nombre} - Cantidad Actual: ${lote.CantidadActual} - Inicial: ${lote.CantidadInicial}`,
     hasNumSerie: lote.HasNumSerie, // Asignar directamente el valor booleano
     idProducto: lote.IdProducto,
   }));
