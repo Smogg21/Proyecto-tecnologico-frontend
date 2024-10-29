@@ -20,6 +20,7 @@ export const NuevoProducto = () => {
     descripcion: "",
     stockMinimo: 0,
     stockMaximo: 10,
+    hasNumSerie: false,
   });
   const [mensaje, setMensaje] = useState(null);
 
@@ -28,10 +29,11 @@ export const NuevoProducto = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    // Asegurarse de que stockMinimo y stockMaximo sean números
-    if (name === "stockMinimo" || name === "stockMaximo") {
+    const { name, type, checked, value } = e.target;
+  
+    if (type === "checkbox") {
+      setFormValues({ ...formValues, [name]: checked });
+    } else if (name === "stockMinimo" || name === "stockMaximo") {
       setFormValues({ ...formValues, [name]: parseInt(value, 10) });
     } else {
       setFormValues({ ...formValues, [name]: value });
@@ -82,6 +84,7 @@ export const NuevoProducto = () => {
       IdCategoria: selectedCategoria.value,
       StockMinimo: formValues.stockMinimo,
       StockMaximo: formValues.stockMaximo,
+      HasNumSerie: formValues.hasNumSerie ? 1 : 0,
     };
 
     try {
@@ -106,6 +109,7 @@ export const NuevoProducto = () => {
           descripcion: "",
           stockMinimo: 0,
           stockMaximo: 10,
+          hasNumSerie: false,
         });
       } else {
         const error = await response.json();
@@ -244,6 +248,21 @@ export const NuevoProducto = () => {
         )}
 
         <label style={{ marginTop: "10px", marginBottom: "5px" }}>
+          Tiene número de serie?
+        </label>
+        <input
+          type="checkbox"
+          name="hasNumSerie"
+          checked={formValues.hasNumSerie}
+          onChange={handleInputChange}
+          style={{
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
           Stock Mínimo
         </label>
         <input
@@ -277,12 +296,15 @@ export const NuevoProducto = () => {
           }}
         />
 
-        <button
-          type="submit" className="button3"
-        >
+        <button type="submit" className="button3">
           Crear Producto
         </button>
-        <button onClick={() => navigate("/vistaOperador")} style={{ marginTop: "20px" }}>Regresar</button>
+        <button
+          onClick={() => navigate("/vistaOperador")}
+          style={{ marginTop: "20px" }}
+        >
+          Regresar
+        </button>
       </form>
     </div>
   );
