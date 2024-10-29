@@ -10,13 +10,7 @@ export const useProductos = () => {
         const response = await axios.get("http://localhost:5000/api/productos");
         const productos = response.data;
 
-        // Extraer los nombres de los productos
-        const nombresProductos = productos.map((producto) => ({
-          IdProducto: producto.IdProducto,
-          Nombre: producto.Nombre,
-        }));
-
-        setProductos(nombresProductos);
+        setProductos(productos);
       } catch (error) {
         console.error("Error fetching productos:", error);
       }

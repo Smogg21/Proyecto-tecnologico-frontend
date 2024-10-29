@@ -1,17 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useState} from "react";
 import Select from "react-select";
 import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
 export const NuevoLote = () => {
-  const nombres = useProductos();
-  const opciones = nombres.map((nombre) => ({
-    value: nombre.IdProducto,
-    label: nombre.Nombre,
+  const productos = useProductos();
+  const opciones = productos.map((producto) => ({
+    value: producto.IdProducto,
+    label: producto.Nombre,
   }));
   const { auth } = useContext(AuthContext);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [formValues, setFormValues] = useState({
     fechaCaducidad: "",
     fechaEntrada: "",
@@ -19,6 +20,7 @@ export const NuevoLote = () => {
     notas: "",
     idUsuario: "",
   });
+  const [serialNumbers, setSerialNumbers] = useState([]);
   const navigate = useNavigate();
   const regresar = () => {
     navigate("/VistaOperador");
@@ -27,10 +29,29 @@ export const NuevoLote = () => {
 
   const handleSelectChange = (selected) => {
     setSelectedOption(selected);
+    const selectedProd = productos.find((p) => p.IdProducto === selected.value);
+    setSelectedProduct(selectedProd);
+    // Resetear campos al cambiar de producto
+    setFormValues({ ...formValues, cantidad: "" });
+    setSerialNumbers([]);
   };
 
   const handleInputChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+
+    // Manejar cambios en la cantidad
+    if (name === "cantidad" && selectedProduct && selectedProduct.HasNumSerie) {
+      const qty = parseInt(value, 10) || 0;
+      const serials = Array(qty).fill("");
+      setSerialNumbers(serials);
+    }
+  };
+
+  const handleSerialNumberChange = (e, index) => {
+    const newSerialNumbers = [...serialNumbers];
+    newSerialNumbers[index] = e.target.value;
+    setSerialNumbers(newSerialNumbers);
   };
 
   const handleSubmit = async (e) => {
@@ -44,16 +65,42 @@ export const NuevoLote = () => {
       });
       return;
     }
+
+    // Validar que la cantidad sea positiva
+    const cantidadInt = parseInt(formValues.cantidad, 10);
+    if (isNaN(cantidadInt) || cantidadInt <= 0) {
+      setMensaje({
+        tipo: "error",
+        texto: "La cantidad debe ser un número entero positivo.",
+      });
+      return;
+    }
+
+    // Validar números de serie si el producto los maneja
+    if (selectedProduct && selectedProduct.HasNumSerie) {
+      if (serialNumbers.some((serial) => serial.trim() === "")) {
+        setMensaje({
+          tipo: "error",
+          texto: "Por favor, ingresa todos los números de serie.",
+        });
+        return;
+      }
+    }
+
     const usuario = auth.user.IdUsuario;
     // Preparar los datos a enviar
     const dataToSend = {
-      producto: selectedOption.value, // El value seleccionado en react-select
+      producto: selectedOption.value,
       fechaCaducidad: formValues.fechaCaducidad || null,
-      fechaEntrada: formValues.fechaEntrada || null, // Si está vacío, el servidor usará la fecha actual
+      fechaEntrada: formValues.fechaEntrada || null,
       cantidad: formValues.cantidad,
       notas: formValues.notas || null,
       idUsuario: usuario,
     };
+
+    if (selectedProduct && selectedProduct.HasNumSerie) {
+      dataToSend.serialNumbers = serialNumbers;
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/lotes", {
@@ -72,12 +119,14 @@ export const NuevoLote = () => {
         });
         // Resetear el formulario
         setSelectedOption(null);
+        setSelectedProduct(null);
         setFormValues({
           fechaCaducidad: "",
           fechaEntrada: "",
           cantidad: "",
           notas: "",
         });
+        setSerialNumbers([]);
       } else {
         const error = await response.json();
         setMensaje({
@@ -97,12 +146,12 @@ export const NuevoLote = () => {
   const selectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a", // Cambiar el fondo del select
+      backgroundColor: "#4a4a4a",
       color: "white",
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22", // Cambiar el fondo del menú desplegable
+      backgroundColor: "#221f22",
       color: "white",
     }),
     option: (provided, state) => ({
@@ -111,16 +160,16 @@ export const NuevoLote = () => {
         ? "#221f22"
         : state.isFocused
         ? "black"
-        : "gray", // Fondo de las opciones
+        : "gray",
       color: "white",
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto seleccionado
+      color: "white",
     }),
     input: (provided) => ({
       ...provided,
-      color: "white", // Cambiar el color del texto que escribes en el input
+      color: "white",
     }),
   };
 
@@ -211,6 +260,35 @@ export const NuevoLote = () => {
           }}
         />
 
+        {/* Mostrar inputs de números de serie si el producto los maneja */}
+        {selectedProduct &&
+          selectedProduct.HasNumSerie &&
+          serialNumbers.length > 0 && (
+            <div>
+              <div>
+                <label style={{ marginTop: "10px" }}>
+                  Ingrese los números de serie:
+                </label>
+              </div>
+              {serialNumbers.map((serial, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  value={serial}
+                  onChange={(e) => handleSerialNumberChange(e, index)}
+                  placeholder={`Número de serie ${index + 1}`}
+                  required
+                  style={{
+                    padding: "8px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    marginBottom: "5px",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
         <label style={{ marginTop: "10px", marginBottom: "5px" }}>
           Descripción
         </label>
@@ -228,13 +306,12 @@ export const NuevoLote = () => {
           }}
         />
 
-        <button
-          type="submit"
-          className="button3"
-        >
+        <button type="submit" className="button3">
           Enviar
         </button>
-        <button onClick={regresar} style={{ marginTop: "20px" }}>Regresar</button>
+        <button onClick={regresar} style={{ marginTop: "20px" }}>
+          Regresar
+        </button>
       </form>
     </div>
   );
