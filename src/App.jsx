@@ -15,6 +15,7 @@ import { VistaAdministrador } from "./Views/VistaAdministrador";
 import { NuevaContraseña } from "./Views/NuevaContraseña";
 import { VistaGestionSistema } from "./Views/VistaGestionSistema";
 import { VistaGestionUsuarios } from "./Views/VistaGestionUsuarios";
+import { NuevoUsuario } from "./Views/NuevoUsuario";
 
 function App() {
   return (
@@ -110,6 +111,14 @@ function App() {
           element={
             <PrivateRoute roles={[1]}>
               <VistaGestionUsuarios />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/nuevoUsuario"
+          element={
+            <PrivateRoute roles={[1]}>
+              <NuevoUsuario />
             </PrivateRoute>
           }
         />

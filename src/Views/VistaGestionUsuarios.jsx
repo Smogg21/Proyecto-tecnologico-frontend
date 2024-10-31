@@ -14,7 +14,7 @@ export const VistaGestionUsuarios = () => {
           margin: "20px",
         }}
       >
-        <button onClick={() => navigate("/vistaOperador")} className="button1">
+        <button onClick={() => navigate("/nuevoUsuario")} className="button1">
           Agregar Usuario
         </button>
         <button onClick={() => navigate("/vistaGerente")} className="button1">

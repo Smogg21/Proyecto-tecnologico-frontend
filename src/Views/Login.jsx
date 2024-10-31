@@ -35,6 +35,7 @@ export const Login = () => {
       if( decodedToken.IdRol == 3){
         navigate('/vistaGerente');
       }
+
     } catch (error) {
       console.error('Error en el inicio de sesión', error);
       setError('Credenciales inválidas o error en el servidor.');
