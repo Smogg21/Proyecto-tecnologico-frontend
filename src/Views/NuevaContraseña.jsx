@@ -71,7 +71,7 @@ export const NuevaContraseña = () => {
         <br />
         <button type="submit">Restablecer Contraseña</button>
         <button
-          onClick={() => navigate("/vistaAdministrador")}
+          onClick={() => navigate("/vistaGestionSistema")}
           style={{ marginTop: '10px' }}
         >
           Regresar

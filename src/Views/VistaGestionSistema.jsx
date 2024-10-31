@@ -1,18 +1,11 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
 
-export const VistaAdministrador = () => {
+export const VistaGestionSistema = () => {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   return (
     <div>
-      <h1>VistaAdministrador</h1>
+      <h1>VistaGestionSistema</h1>
       <div
         style={{
           display: "flex",
@@ -28,13 +21,17 @@ export const VistaAdministrador = () => {
           Ir a Vista Gerente
         </button>
         <button
-          onClick={() => navigate("/vistaGestionSistema")}
+          onClick={() => navigate("/nuevaContraseña")}
           className="button1"
         >
-          Ir a gestion del sistema
+          Cambiar contraseña a usuario
         </button>
       </div>
-      <button onClick={handleLogout}>Cerrar Sesión</button>
+      <button
+          onClick={() => navigate("/vistaAdministrador")}
+        >
+          Regresar
+        </button>
     </div>
   );
 };
