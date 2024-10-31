@@ -14,6 +14,7 @@ import { Unauthorized } from "./Views/Unauthorized";
 import { VistaAdministrador } from "./Views/VistaAdministrador";
 import { NuevaContraseña } from "./Views/NuevaContraseña";
 import { VistaGestionSistema } from "./Views/VistaGestionSistema";
+import { VistaGestionUsuarios } from "./Views/VistaGestionUsuarios";
 
 function App() {
   return (
@@ -29,9 +30,8 @@ function App() {
           }
         />
 
-
         <Route path="/unauthorized" element={<Unauthorized />} />
-        
+
         {/* Rutas Protegidas */}
         <Route
           path="/vistaOperador"
@@ -106,6 +106,14 @@ function App() {
           }
         />
         <Route
+          path="/vistaGestionUsuarios"
+          element={
+            <PrivateRoute roles={[1]}>
+              <VistaGestionUsuarios />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/nuevaContraseña"
           element={
             <PrivateRoute roles={[1]}>
@@ -113,7 +121,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        
       </Routes>
     </BrowserRouter>
   );

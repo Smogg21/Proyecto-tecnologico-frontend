@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-export const VistaGestionSistema = () => {
+export const VistaGestionUsuarios = () => {
   const navigate = useNavigate();
 
   return (
     <div>
-      <h1>Gestion del Sistema</h1>
+      <h1>Gestion Usuarios</h1>
       <div
         style={{
           display: "flex",
@@ -15,20 +15,20 @@ export const VistaGestionSistema = () => {
         }}
       >
         <button onClick={() => navigate("/vistaOperador")} className="button1">
-          Ir a Vista Operador
+          Agregar Usuario
         </button>
         <button onClick={() => navigate("/vistaGerente")} className="button1">
-          Ir a Vista Gerente
+          Editar Usuario
         </button>
         <button
-          onClick={() => navigate("/vistaGestionUsuarios")}
+          onClick={() => navigate("/nuevaContraseña")}
           className="button1"
         >
-          Ir a gestion de usuarios
+          Cambiar contraseña a usuario
         </button>
       </div>
       <button
-          onClick={() => navigate("/vistaAdministrador")}
+          onClick={() => navigate("/vistaGestionSistema")}
         >
           Regresar
         </button>
