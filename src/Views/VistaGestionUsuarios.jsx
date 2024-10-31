@@ -10,7 +10,6 @@ export const VistaGestionUsuarios = () => {
     <div>
       
       <h1>Gestion Usuarios</h1>
-
       
       <div
         style={{
