@@ -12,7 +12,7 @@ export const VistaAdministrador = () => {
 
   return (
     <div>
-      <h1>VistaGerente</h1>
+      <h1>VistaAdministrador</h1>
       <div
         style={{
           display: "flex",
