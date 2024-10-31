@@ -36,9 +36,14 @@ export const Login = () => {
         navigate('/vistaGerente');
       }
 
-    } catch (error) {
-      console.error('Error en el inicio de sesión', error);
-      setError('Credenciales inválidas o error en el servidor.');
+    } catch (err) {
+
+       // Manejar el mensaje de error específico del backend
+       if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Credenciales inválidas o error en el servidor.');
+      }
     }
   };
 
