@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 export const VistaGestionSistema = () => {
+  const location = useLocation();
+  const mensaje = location.state?.mensaje;
   const navigate = useNavigate();
 
   return (
@@ -32,6 +35,22 @@ export const VistaGestionSistema = () => {
         >
           Regresar
         </button>
+
+        {mensaje && (
+        <div
+          style={{
+            padding: "10px",
+            marginTop: "15px",
+            marginBottom: "15px",
+            color: mensaje.tipo === "exito" ? "green" : "red",
+            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
+            borderRadius: "4px",
+            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+          }}
+        >
+          {mensaje.texto}
+        </div>
+      )}
     </div>
   );
 };
