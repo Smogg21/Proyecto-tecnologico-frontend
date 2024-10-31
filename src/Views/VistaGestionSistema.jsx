@@ -15,10 +15,10 @@ export const VistaGestionSistema = () => {
         }}
       >
         <button onClick={() => navigate("/vistaOperador")} className="button1">
-          Ir a Vista Operador
+          Agregar categoria
         </button>
         <button onClick={() => navigate("/vistaGerente")} className="button1">
-          Ir a Vista Gerente
+          Editar categoria
         </button>
         <button
           onClick={() => navigate("/vistaGestionUsuarios")}
