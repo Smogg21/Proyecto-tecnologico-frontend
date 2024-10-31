@@ -222,19 +222,7 @@ export const EditarUsuario = () => {
 
         {selectedUsuario && (
           <>
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre de Usuario</label>
-            <input
-              type="text"
-              name="usuario"
-              value={formValues.usuario}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
+            
             <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre</label>
             <input
               type="text"
@@ -263,7 +251,19 @@ export const EditarUsuario = () => {
                 border: "1px solid #ccc",
               }}
             />
-
+            <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre de Usuario</label>
+            <input
+              type="text"
+              name="usuario"
+              value={formValues.usuario}
+              onChange={handleInputChange}
+              required
+              style={{
+                padding: "8px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            />
             <label style={{ marginTop: "10px" }}>Rol</label>
             {loading ? (
               <p>Cargando Roles...</p>
