@@ -14,10 +14,10 @@ export const VistaGestionSistema = () => {
           margin: "20px",
         }}
       >
-        <button onClick={() => navigate("/vistaOperador")} className="button1">
+        <button onClick={() => navigate("/nuevaCategoria")} className="button1">
           Agregar categoria
         </button>
-        <button onClick={() => navigate("/vistaGerente")} className="button1">
+        <button onClick={() => navigate("/editarCategoria")} className="button1">
           Editar categoria
         </button>
         <button

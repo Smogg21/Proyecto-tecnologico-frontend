@@ -17,6 +17,8 @@ import { VistaGestionSistema } from "./Views/VistaGestionSistema";
 import { VistaGestionUsuarios } from "./Views/VistaGestionUsuarios";
 import { NuevoUsuario } from "./Views/NuevoUsuario";
 import { EditarUsuario } from "./Views/EditarUsuario";
+import { NuevaCategoria } from "./Views/NuevaCategoria";
+import { EditarCategoria } from "./Views/EditarCategoria";
 
 function App() {
   return (
@@ -104,6 +106,22 @@ function App() {
           element={
             <PrivateRoute roles={[1]}>
               <VistaGestionSistema />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/nuevaCategoria"
+          element={
+            <PrivateRoute roles={[1]}>
+              <NuevaCategoria />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/editarCategoria"
+          element={
+            <PrivateRoute roles={[1]}>
+              <EditarCategoria />
             </PrivateRoute>
           }
         />
