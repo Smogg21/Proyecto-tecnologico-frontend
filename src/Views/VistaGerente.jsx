@@ -18,10 +18,10 @@ export const VistaGerente = () =>{
       <h1>VistaGerente</h1>
       <h3>Movimientos totales por día</h3>
       <MovimientosXDia/>
-      <h3>Entradas totales por día</h3>
-      <EntradasXDia/>
       <h3>Salidas totales por día</h3>
       <SalidasXDia/>
+      <h3>Entradas totales por día</h3>
+      <EntradasXDia/>
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
     </div>
