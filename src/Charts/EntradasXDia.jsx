@@ -66,7 +66,16 @@ export const EntradasXDia = () => {
   return (
     <LineChart width={600} height={300} data={data}>
       <XAxis dataKey="FechaMovimiento" tickFormatter={(tick) => tick.split('T')[0]}/>
-      <YAxis />
+      <YAxis 
+  dataKey="IdLote" 
+  type="category" 
+  width={200} 
+  tickFormatter={(idLote) => {
+    const lote = data.find(item => item.IdLote === idLote);
+    return lote ? `${lote.Nombre} (Lote ${idLote})` : idLote;
+  }}
+  tick={{ fontSize: 12 }}
+/>
       <Tooltip />
       <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
       <Line type="monotone" dataKey="TotalCantidad" stroke="#8884d8" />

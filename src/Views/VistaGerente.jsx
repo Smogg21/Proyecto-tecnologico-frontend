@@ -7,6 +7,7 @@ import { EntradasXDia } from "../Charts/EntradasXDia";
 import { LotesActuales } from "../Charts/LotesActuales";
 
 
+
 export const VistaGerente = () =>{
   const navigate = useNavigate();
   const {logout} = useContext(AuthContext);
@@ -25,6 +26,7 @@ export const VistaGerente = () =>{
       <EntradasXDia/>
       <h3>Lotes actuales</h3>
       <LotesActuales/>
+
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
     </div>
