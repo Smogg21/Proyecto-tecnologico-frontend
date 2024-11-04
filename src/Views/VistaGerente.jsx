@@ -1,7 +1,10 @@
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import RealTimeChart from "../Charts/MovimientosXDia";
+import { MovimientosXDia } from "../Charts/MovimientosXDia";
+import { SalidasXDia } from "../Charts/SalidasXDia";
+import { EntradasXDia } from "../Charts/EntradasXDia";
+
 
 export const VistaGerente = () =>{
   const navigate = useNavigate();
@@ -14,7 +17,11 @@ export const VistaGerente = () =>{
     <div>
       <h1>VistaGerente</h1>
       <h3>Movimientos totales por día</h3>
-      <RealTimeChart/>
+      <MovimientosXDia/>
+      <h3>Entradas totales por día</h3>
+      <EntradasXDia/>
+      <h3>Salidas totales por día</h3>
+      <SalidasXDia/>
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
     </div>

@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { AuthContext } from '../contexts/AuthContext';
 
-export const MovimientosXDia = () => {
+export const EntradasXDia = () => {
   const [data, setData] = useState([]);
   const { auth } = useContext(AuthContext);
 
@@ -30,7 +30,7 @@ export const MovimientosXDia = () => {
     });
 
     // Escuchar el evento 'dataUpdate'
-    socket.on('movimientosxdia', (newData) => {
+    socket.on('entradasxdia', (newData) => {
       setData(newData);
     });
 
@@ -39,7 +39,7 @@ export const MovimientosXDia = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/charts/movimientosxdia', {
+        const response = await fetch('http://localhost:5000/api/charts/entradasxdia', {
           headers: {
             Authorization: `Bearer ${auth.token}`, // Incluir el token en el encabezado
           },
@@ -73,5 +73,3 @@ export const MovimientosXDia = () => {
     </LineChart>
   );
 }
-
-
