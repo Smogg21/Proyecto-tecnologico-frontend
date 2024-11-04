@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MovimientosXDia } from "../Charts/MovimientosXDia";
 import { SalidasXDia } from "../Charts/SalidasXDia";
 import { EntradasXDia } from "../Charts/EntradasXDia";
+import { LotesActuales } from "../Charts/LotesActuales";
 
 
 export const VistaGerente = () =>{
@@ -22,6 +23,8 @@ export const VistaGerente = () =>{
       <SalidasXDia/>
       <h3>Entradas totales por día</h3>
       <EntradasXDia/>
+      <h3>Lotes actuales</h3>
+      <LotesActuales/>
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
     </div>
