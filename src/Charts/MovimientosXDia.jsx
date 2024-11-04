@@ -34,7 +34,25 @@ function RealTimeChart() {
       setData(newData);
     });
 
+    
     // Obtener datos iniciales
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/dataForChart', {
+          headers: {
+            Authorization: `Bearer ${auth.token}`, // Incluir el token en el encabezado
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        const jsonData = await response.json();
+        setData(jsonData);
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
     fetchData();
 
     // Limpiar la conexión cuando el componente se desmonte
@@ -43,22 +61,7 @@ function RealTimeChart() {
     };
   }, [auth]); 
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/dataForChart', {
-        headers: {
-          Authorization: `Bearer ${auth.token}`, // Incluir el token en el encabezado
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error('Error al obtener datos:', error);
-    }
-  };
+  
 
   return (
     <LineChart width={600} height={300} data={data}>
