@@ -22,7 +22,7 @@ export const RegistrarMovimiento = () => {
   const IdUsuario = auth.user.IdUsuario; // Obtener el IdUsuario del contexto de autenticación
 
   // Hook personalizado para obtener los lotes
-  const { lotes } = useLotes();
+  const { lotes, refetch } = useLotes();
 
   // Mapeo de los lotes para react-select
   const lotesOptions = lotes.map((lote) => ({
@@ -164,6 +164,7 @@ export const RegistrarMovimiento = () => {
         setNotas("");
         setSerialNumbers([]);
         setSelectedSerialNumber(null);
+        refetch();
       } else {
         const error = await response.json();
         setMensaje({
