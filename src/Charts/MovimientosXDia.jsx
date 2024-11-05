@@ -1,7 +1,7 @@
 // Importar las librerías necesarias
-import  { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'; 
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { AuthContext } from '../contexts/AuthContext';
 
 export const MovimientosXDia = () => {
@@ -29,14 +29,12 @@ export const MovimientosXDia = () => {
       console.error('Error de conexión:', err.message);
     });
 
-    // Escuchar el evento 'dataUpdate'
+    // Escuchar el evento 'movimientosxdia'
     socket.on('movimientosxdia', (newData) => {
       setData(newData);
     });
 
-    
     // Obtener datos iniciales
-
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/charts/movimientosxdia', {
@@ -61,17 +59,24 @@ export const MovimientosXDia = () => {
     };
   }, [auth]); 
 
-  
-
   return (
-    <LineChart width={600} height={300} data={data}>
-      <XAxis dataKey="FechaMovimiento" tickFormatter={(tick) => tick.split('T')[0]}/>
-      <YAxis />
-      <Tooltip />
-      <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-      <Line type="monotone" dataKey="TotalCantidad" stroke="#8884d8" />
-    </LineChart>
+    <div style={{ width: '100%', height: 400 }}>
+      <ResponsiveContainer>
+        <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 70 }}>
+          <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+          <XAxis 
+            dataKey="FechaMovimiento" 
+            tickFormatter={(tick) => tick.split('T')[0]}
+            angle={-45}
+            textAnchor="end"
+            interval={0} // Mostrar todas las etiquetas
+            height={60}
+          />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="TotalCantidad" stroke="#8884d8" name="Total Movimientos" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
-}
-
-
+};
