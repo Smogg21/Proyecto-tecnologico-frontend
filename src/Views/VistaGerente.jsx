@@ -6,6 +6,7 @@ import { SalidasXDia } from "../Charts/SalidasXDia";
 import { EntradasXDia } from "../Charts/EntradasXDia";
 import { LotesActuales } from "../Charts/LotesActuales";
 import { ProductosPorVencer } from "../Charts/ProductosPorVencer";
+import { ProductosBajoStockMinimo } from "../Charts/ProductosBajoStockMinimo";
 
 
 
@@ -29,6 +30,8 @@ export const VistaGerente = () =>{
       <LotesActuales/>
       <h3>Productos por vencer</h3>
       <ProductosPorVencer/>
+      <h3>Productos bajo stock mínimo</h3>
+      <ProductosBajoStockMinimo/>
 
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
