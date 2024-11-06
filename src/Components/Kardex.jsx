@@ -126,6 +126,7 @@ export const Kardex = () => {
               <th>Notas</th>
               <th>Número de Serie</th>
               <th>ID Lote</th>
+              <th>Saldo</th>
             </tr>
           </thead>
           <tbody>
@@ -139,6 +140,7 @@ export const Kardex = () => {
                 <td>{movimiento.Notas}</td>
                 <td>{movimiento.NumSerie || 'N/A'}</td>
                 <td>{movimiento.IdLote}</td>
+                <td>{movimiento.Saldo}</td>
               </tr>
             ))}
           </tbody>
