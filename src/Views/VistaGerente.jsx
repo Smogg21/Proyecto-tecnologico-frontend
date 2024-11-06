@@ -7,6 +7,7 @@ import { EntradasXDia } from "../Charts/EntradasXDia";
 import { LotesActuales } from "../Charts/LotesActuales";
 import { ProductosPorVencer } from "../Charts/ProductosPorVencer";
 import { ProductosBajoStockMinimo } from "../Charts/ProductosBajoStockMinimo";
+import { Kardex } from "../Components/Kardex";
 
 
 
@@ -20,6 +21,7 @@ export const VistaGerente = () =>{
   return(
     <div>
       <h1>VistaGerente</h1>
+      <Kardex/>
       <h3>Movimientos totales por día</h3>
       <MovimientosXDia/>
       <h3>Salidas totales por día</h3>
