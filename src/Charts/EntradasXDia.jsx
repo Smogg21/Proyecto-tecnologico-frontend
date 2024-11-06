@@ -72,7 +72,10 @@ export const EntradasXDia = () => {
           <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
           <XAxis 
             dataKey="FechaMovimiento" 
-            tickFormatter={(tick) => format(parseISO(tick), 'dd/MM/yyyy')}
+            tickFormatter={(tick) => {
+              const date = new Date(tick);
+              return date.toLocaleDateString();
+            }}
             angle={-45}
             textAnchor="end"
             interval={0} // Mostrar todas las etiquetas
