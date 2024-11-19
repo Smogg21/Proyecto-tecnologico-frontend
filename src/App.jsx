@@ -1,5 +1,8 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import NotificationListener from "./Components/NotificationListener"; 
+import "react-toastify/dist/ReactToastify.css";
 import { Login } from "./Views/Login";
 import { VistaOperador } from "./Views/VistaOperador";
 import { NuevoLote } from "./Views/NuevoLote";
@@ -23,6 +26,8 @@ import { EditarCategoria } from "./Views/EditarCategoria";
 function App() {
   return (
     <BrowserRouter>
+      <NotificationListener />
+      <ToastContainer />
       <Routes>
         {/* Ruta Pública para Login */}
         <Route
