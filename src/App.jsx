@@ -26,6 +26,7 @@ import { EditarCategoria } from "./Views/EditarCategoria";
 function App() {
   return (
     <BrowserRouter>
+      {/*Notificaciones*/}
       <NotificationListener />
       <ToastContainer />
       <Routes>
