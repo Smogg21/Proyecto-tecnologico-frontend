@@ -1,62 +1,57 @@
-import { useContext, useState, useEffect } from "react";
-import Select from "react-select";
+// src/Components/RegistrarMovimiento.jsx
+import  { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLotes } from "../Hooks/useLotes";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 import NotificationListener from "../Components/NotificationListener";
+import {
+  Button,
+  TextField,
+  Typography,
+  Box,
+  Paper,
+  Autocomplete,
+} from "@mui/material";
 
 export const RegistrarMovimiento = () => {
-  // Estados para manejar los campos del formulario
+  // Estados y hooks
   const [selectedLote, setSelectedLote] = useState(null);
   const [tipoMovimiento, setTipoMovimiento] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [notas, setNotas] = useState("");
   const [mensaje, setMensaje] = useState(null);
-
-  // Estados para manejar los números de serie
   const [serialNumbers, setSerialNumbers] = useState([]);
   const [selectedSerialNumber, setSelectedSerialNumber] = useState(null);
 
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
-  const IdUsuario = auth.user.IdUsuario; // Obtener el IdUsuario del contexto de autenticación
+  const IdUsuario = auth.user.IdUsuario;
 
-  // Hook personalizado para obtener los lotes
   const { lotes, refetch } = useLotes();
 
-  // Mapeo de los lotes para react-select
   const lotesOptions = lotes.map((lote) => ({
     value: lote.IdLote,
     label: `Lote ${lote.IdLote} - ${lote.Nombre} - Cantidad Actual: ${lote.CantidadActual} - Inicial: ${lote.CantidadInicial}`,
-    hasNumSerie: lote.HasNumSerie, // Asignar directamente el valor booleano
+    hasNumSerie: lote.HasNumSerie,
     idProducto: lote.IdProducto,
   }));
 
-  // Función para manejar la selección de un lote
-  const handleLoteChange = (lote) => {
-    setSelectedLote(lote);
-    // Debugging: Verificar el lote seleccionado
-  };
-  
-
-  const handleTipoMovimientoChange = (tipo) => {
-    setTipoMovimiento(tipo);
-    setSelectedSerialNumber(null); // Resetear número de serie seleccionado
+  const handleLoteChange = (event, value) => {
+    setSelectedLote(value);
   };
 
-  // useEffect para manejar cambios en la selección de lote
+  const handleTipoMovimientoChange = (event, value) => {
+    setTipoMovimiento(value);
+    setSelectedSerialNumber(null);
+  };
+
   useEffect(() => {
     const fetchSerialNumbers = async () => {
       if (selectedLote && selectedLote.hasNumSerie && tipoMovimiento) {
-        // Establecer cantidad en "1" para productos con número de serie
         setCantidad("1");
-
-        // Determinar el estado a buscar según el tipo de movimiento
         const estado =
           tipoMovimiento.value === "Salida" ? "Activo" : "Inactivo";
-
-        // Obtener los números de serie filtrados por estado
         try {
           const response = await axios.get(
             `http://localhost:5000/api/lotes/${selectedLote.value}/serial-numbers`,
@@ -77,7 +72,6 @@ export const RegistrarMovimiento = () => {
           });
         }
       } else {
-        // Resetear si no hay lote o tipo de movimiento seleccionado
         setSerialNumbers([]);
         setSelectedSerialNumber(null);
         if (!selectedLote || !selectedLote.hasNumSerie) {
@@ -89,10 +83,9 @@ export const RegistrarMovimiento = () => {
     fetchSerialNumbers();
   }, [selectedLote, tipoMovimiento]);
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validaciones básicas
     if (!selectedLote) {
       setMensaje({ tipo: "error", texto: "Por favor, selecciona un lote." });
@@ -105,7 +98,7 @@ export const RegistrarMovimiento = () => {
       });
       return;
     }
-  
+
     const cantidadInt = parseInt(cantidad, 10);
     if (isNaN(cantidadInt) || cantidadInt <= 0) {
       setMensaje({
@@ -114,7 +107,7 @@ export const RegistrarMovimiento = () => {
       });
       return;
     }
-  
+
     if (selectedLote.hasNumSerie) {
       if (!selectedSerialNumber) {
         setMensaje({
@@ -132,7 +125,7 @@ export const RegistrarMovimiento = () => {
         return;
       }
     }
-  
+
     // Preparar datos para enviar al backend
     const dataToSend = {
       IdLote: selectedLote.value,
@@ -182,164 +175,131 @@ export const RegistrarMovimiento = () => {
     }
   };
 
-  // Opciones para el tipo de movimiento
   const tipoMovimientoOptions = [
     { value: "Salida", label: "Salida" },
     { value: "Entrada", label: "Entrada" },
   ];
 
-  // Estilos personalizados para react-select
-  const selectStyles = {
-    control: (provided) => ({
-      ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-    input: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-  };
-
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Paper
+      elevation={3}
+      sx={{
+        maxWidth: "600px",
         margin: "0 auto",
         padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        mt: 4,
       }}
     >
       <NotificationListener />
-      <h1>Registrar Movimiento de Inventario</h1>
+      <Typography variant="h4" gutterBottom>
+        Registrar Movimiento de Inventario
+      </Typography>
 
-      {/* Mostrar mensajes de éxito o error */}
       {mensaje && (
-        <div
-          style={{
+        <Box
+          sx={{
             padding: "10px",
             marginBottom: "15px",
             color: mensaje.tipo === "exito" ? "green" : "red",
             border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
             borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+            backgroundColor:
+              mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
           }}
         >
           {mensaje.texto}
-        </div>
+        </Box>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        {/* Selector de Tipo de Movimiento */}
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Tipo de Movimiento
-        </label>
-        <Select
+      <form onSubmit={handleSubmit}>
+        <Autocomplete
           options={tipoMovimientoOptions}
+          getOptionLabel={(option) => option.label}
           value={tipoMovimiento}
           onChange={handleTipoMovimientoChange}
-          styles={selectStyles}
-          placeholder="Selecciona el tipo de movimiento"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Tipo de Movimiento"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+            />
+          )}
         />
 
-        {/* Selector de Lote */}
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>Lote</label>
-        <Select
+        <Autocomplete
           options={lotesOptions}
+          getOptionLabel={(option) => option.label}
           value={selectedLote}
           onChange={handleLoteChange}
-          styles={selectStyles}
-          placeholder="Selecciona un lote"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Lote"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+            />
+          )}
         />
 
-        {/* Selector de Número de Serie, solo si el lote maneja números de serie */}
         {selectedLote && selectedLote.hasNumSerie && tipoMovimiento && (
-          <>
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-              Número de Serie
-            </label>
-            <Select
-              options={serialNumbers}
-              value={selectedSerialNumber}
-              onChange={setSelectedSerialNumber}
-              styles={selectStyles}
-              placeholder="Selecciona un número de serie"
-            />
-          </>
+          <Autocomplete
+            options={serialNumbers}
+            getOptionLabel={(option) => option.label}
+            value={selectedSerialNumber}
+            onChange={(event, value) => setSelectedSerialNumber(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Número de Serie"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+              />
+            )}
+          />
         )}
 
-        {/* Campo de Cantidad */}
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Cantidad
-        </label>
-        <input
+        <TextField
+          label="Cantidad"
           type="number"
           name="cantidad"
           value={cantidad}
           onChange={(e) => setCantidad(e.target.value)}
           required
-          min="1"
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-          disabled={selectedLote && selectedLote.hasNumSerie} // Deshabilitar si tiene número de serie
+          inputProps={{ min: 1 }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          disabled={selectedLote && selectedLote.hasNumSerie}
         />
 
-        {/* Campo de Notas */}
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>Notas</label>
-        <textarea
+        <TextField
+          label="Notas"
           name="notas"
-          rows={5}
-          placeholder="Notas"
+          rows={4}
+          multiline
           value={notas}
           onChange={(e) => setNotas(e.target.value)}
-          style={{
-            resize: "none",
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        {/* Botón para Registrar Movimiento */}
-        <button type="submit" className="button3">
-          Registrar Movimiento
-        </button>
-
-        {/* Botón para Regresar */}
-        <button
-          type="button"
-          onClick={() => navigate("/VistaOperador")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <Button variant="contained" color="primary" type="submit">
+            Registrar Movimiento
+          </Button>
+          <Button variant="outlined" onClick={() => navigate("/VistaOperador")}>
+            Regresar
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Paper>
   );
 };

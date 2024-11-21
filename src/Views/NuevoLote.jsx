@@ -1,14 +1,23 @@
-import { useContext, useState} from "react";
-import Select from "react-select";
+// src/Components/NuevoLote.jsx
+import  { useContext, useState } from "react";
 import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import {
+  Button,
+  TextField,
+  Typography,
+  Box,
+  Paper,
+  Autocomplete,
+} from "@mui/material";
 
 export const NuevoLote = () => {
   const productos = useProductos();
   const opciones = productos.map((producto) => ({
     value: producto.IdProducto,
     label: producto.Nombre,
+    HasNumSerie: producto.HasNumSerie,
   }));
   const { auth } = useContext(AuthContext);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -18,7 +27,6 @@ export const NuevoLote = () => {
     fechaEntrada: "",
     cantidad: "",
     notas: "",
-    idUsuario: "",
   });
   const [serialNumbers, setSerialNumbers] = useState([]);
   const navigate = useNavigate();
@@ -27,9 +35,9 @@ export const NuevoLote = () => {
   };
   const [mensaje, setMensaje] = useState(null);
 
-  const handleSelectChange = (selected) => {
-    setSelectedOption(selected);
-    const selectedProd = productos.find((p) => p.IdProducto === selected.value);
+  const handleSelectChange = (event, value) => {
+    setSelectedOption(value);
+    const selectedProd = productos.find((p) => p.IdProducto === value?.value);
     setSelectedProduct(selectedProd);
     // Resetear campos al cambiar de producto
     setFormValues({ ...formValues, cantidad: "" });
@@ -41,7 +49,11 @@ export const NuevoLote = () => {
     setFormValues({ ...formValues, [name]: value });
 
     // Manejar cambios en la cantidad
-    if (name === "cantidad" && selectedProduct && selectedProduct.HasNumSerie) {
+    if (
+      name === "cantidad" &&
+      selectedProduct &&
+      selectedProduct.HasNumSerie
+    ) {
       const qty = parseInt(value, 10) || 0;
       const serials = Array(qty).fill("");
       setSerialNumbers(serials);
@@ -143,176 +155,133 @@ export const NuevoLote = () => {
     }
   };
 
-  const selectStyles = {
-    control: (provided) => ({
-      ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-    input: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-  };
-
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Paper
+      elevation={3}
+      sx={{
+        maxWidth: "600px",
         margin: "0 auto",
         padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        mt: 4,
       }}
     >
-      <h1>Nuevo Lote</h1>
+      <Typography variant="h4" gutterBottom>
+        Nuevo Lote
+      </Typography>
       {mensaje && (
-        <div
-          style={{
+        <Box
+          sx={{
             padding: "10px",
             marginBottom: "15px",
             color: mensaje.tipo === "exito" ? "green" : "red",
             border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
             borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+            backgroundColor:
+              mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
           }}
         >
           {mensaje.texto}
-        </div>
+        </Box>
       )}
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginBottom: "5px" }}>Producto</label>
-        <Select
+      <form onSubmit={handleSubmit}>
+        <Autocomplete
           options={opciones}
+          getOptionLabel={(option) => option.label}
           value={selectedOption}
           onChange={handleSelectChange}
-          styles={selectStyles}
-          placeholder="Busca un Producto"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Producto"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              required
+            />
+          )}
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Caducidad
-        </label>
-        <input
+        <TextField
+          label="Fecha de Caducidad"
           type="date"
           name="fechaCaducidad"
           value={formValues.fechaCaducidad}
           onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          InputLabelProps={{ shrink: true }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Fecha de Entrada
-        </label>
-        <input
+        <TextField
+          label="Fecha de Entrada"
           type="datetime-local"
-          step="1"
           name="fechaEntrada"
           value={formValues.fechaEntrada}
           onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          InputLabelProps={{ shrink: true }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Cantidad
-        </label>
-        <input
+        <TextField
+          label="Cantidad"
           type="number"
           name="cantidad"
           value={formValues.cantidad}
           onChange={handleInputChange}
           required
-          min="0"
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          inputProps={{ min: 0 }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
         {/* Mostrar inputs de números de serie si el producto los maneja */}
         {selectedProduct &&
           selectedProduct.HasNumSerie &&
           serialNumbers.length > 0 && (
-            <div>
-              <div>
-                <label style={{ marginTop: "10px" }}>
-                  Ingrese los números de serie:
-                </label>
-              </div>
+            <Box mt={2}>
+              <Typography variant="subtitle1">
+                Ingrese los números de serie:
+              </Typography>
               {serialNumbers.map((serial, index) => (
-                <input
+                <TextField
                   key={index}
-                  type="text"
+                  label={`Número de serie ${index + 1}`}
                   value={serial}
                   onChange={(e) => handleSerialNumberChange(e, index)}
-                  placeholder={`Número de serie ${index + 1}`}
                   required
-                  style={{
-                    padding: "8px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                    marginBottom: "5px",
-                  }}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
                 />
               ))}
-            </div>
+            </Box>
           )}
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Descripción
-        </label>
-        <textarea
+        <TextField
+          label="Descripción"
           name="notas"
-          rows={5}
-          placeholder="Notas"
+          rows={4}
+          multiline
           value={formValues.notas}
           onChange={handleInputChange}
-          style={{
-            resize: "none",
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <button type="submit" className="button3">
-          Enviar
-        </button>
-        <button onClick={regresar} style={{ marginTop: "20px" }}>
-          Regresar
-        </button>
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <Button variant="contained" color="primary" type="submit">
+            Enviar
+          </Button>
+          <Button variant="outlined" onClick={regresar}>
+            Regresar
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Paper>
   );
 };

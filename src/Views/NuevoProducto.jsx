@@ -1,15 +1,23 @@
-// src/Views/NuevoProducto.jsx
-import { useState } from "react";
-import Select from "react-select";
+// src/Components/NuevoProducto.jsx
+import  { useState } from "react";
 import { useCategorias } from "../Hooks/useCategorias";
 import { useNavigate } from "react-router-dom";
 import NotificationListener from "../Components/NotificationListener";
+import {
+  Button,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Box,
+  Paper,
+  Autocomplete,
+} from "@mui/material";
 
 export const NuevoProducto = () => {
   const { categorias, loading, error: categoriasError } = useCategorias();
   const navigate = useNavigate();
 
-  // Transformar las categorías para react-select
   const opcionesCategorias = categorias.map((categoria) => ({
     value: categoria.IdCategoria,
     label: categoria.Nombre,
@@ -25,13 +33,13 @@ export const NuevoProducto = () => {
   });
   const [mensaje, setMensaje] = useState(null);
 
-  const handleSelectChange = (selected) => {
-    setSelectedCategoria(selected);
+  const handleSelectChange = (event, value) => {
+    setSelectedCategoria(value);
   };
 
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
-  
+
     if (type === "checkbox") {
       setFormValues({ ...formValues, [name]: checked });
     } else if (name === "stockMinimo" || name === "stockMaximo") {
@@ -44,7 +52,7 @@ export const NuevoProducto = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar campos requeridos
+    // Validaciones
     if (!formValues.nombre.trim()) {
       setMensaje({
         tipo: "error",
@@ -61,7 +69,6 @@ export const NuevoProducto = () => {
       return;
     }
 
-    // Validar stock mínimo y máximo
     if (formValues.stockMinimo < 0) {
       setMensaje({
         tipo: "error",
@@ -128,66 +135,38 @@ export const NuevoProducto = () => {
     }
   };
 
-  const selectStyles = {
-    control: (provided) => ({
-      ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-    input: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-  };
-
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Paper
+      elevation={3}
+      sx={{
+        maxWidth: "600px",
         margin: "0 auto",
         padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        mt: 4,
       }}
     >
       <NotificationListener />
-      <h1>Nuevo Producto</h1>
+      <Typography variant="h4" gutterBottom>
+        Nuevo Producto
+      </Typography>
       {mensaje && (
-        <div
-          style={{
+        <Box
+          sx={{
             padding: "10px",
             marginBottom: "15px",
             color: mensaje.tipo === "exito" ? "green" : "red",
             border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
             borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+            backgroundColor:
+              mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
           }}
         >
           {mensaje.texto}
-        </div>
+        </Box>
       )}
       {categoriasError && (
-        <div
-          style={{
+        <Box
+          sx={{
             padding: "10px",
             marginBottom: "15px",
             color: "red",
@@ -197,117 +176,101 @@ export const NuevoProducto = () => {
           }}
         >
           {categoriasError}
-        </div>
+        </Box>
       )}
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginBottom: "5px" }}>Nombre</label>
-        <input
-          type="text"
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Nombre"
           name="nombre"
           value={formValues.nombre}
           onChange={handleInputChange}
           required
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Descripción
-        </label>
-        <textarea
+        <TextField
+          label="Descripción"
           name="descripcion"
-          rows={4}
-          placeholder="Descripción del producto"
           value={formValues.descripcion}
           onChange={handleInputChange}
-          style={{
-            resize: "none",
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          multiline
+          rows={4}
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Categoría
-        </label>
         {loading ? (
-          <p>Cargando categorías...</p>
+          <Typography>Cargando categorías...</Typography>
         ) : (
-          <Select
+          <Autocomplete
             options={opcionesCategorias}
+            getOptionLabel={(option) => option.label}
             value={selectedCategoria}
             onChange={handleSelectChange}
-            styles={selectStyles}
-            placeholder="Selecciona una categoría"
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Categoría"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+              />
+            )}
           />
         )}
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Tiene número de serie?
-        </label>
-        <input
-          type="checkbox"
-          name="hasNumSerie"
-          checked={formValues.hasNumSerie}
-          onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formValues.hasNumSerie}
+              onChange={handleInputChange}
+              name="hasNumSerie"
+              color="primary"
+            />
+          }
+          label="¿Tiene número de serie?"
+          sx={{ mt: 2 }}
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Stock Mínimo
-        </label>
-        <input
+        <TextField
+          label="Stock Mínimo"
           type="number"
           name="stockMinimo"
           value={formValues.stockMinimo}
           onChange={handleInputChange}
           required
-          min="0"
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          inputProps={{ min: 0 }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Stock Máximo
-        </label>
-        <input
+        <TextField
+          label="Stock Máximo"
           type="number"
           name="stockMaximo"
           value={formValues.stockMaximo}
           onChange={handleInputChange}
           required
-          min={formValues.stockMinimo}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          inputProps={{ min: formValues.stockMinimo }}
+          variant="outlined"
+          margin="normal"
+          fullWidth
         />
 
-        <button type="submit" className="button3">
-          Crear Producto
-        </button>
-        <button
-          onClick={() => navigate("/vistaOperador")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <Button variant="contained" color="primary" type="submit">
+            Crear Producto
+          </Button>
+          <Button variant="outlined" onClick={() => navigate("/vistaOperador")}>
+            Regresar
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Paper>
   );
 };
