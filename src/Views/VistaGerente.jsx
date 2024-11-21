@@ -9,8 +9,11 @@ import { ProductosPorVencer } from "../Charts/ProductosPorVencer";
 import { ProductosBajoStockMinimo } from "../Charts/ProductosBajoStockMinimo";
 import { Kardex } from "../Components/Kardex";
 import NotificationListener from "../Components/NotificationListener";
+import { Box, IconButton } from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 
-export const VistaGerente = () => {
+// eslint-disable-next-line react/prop-types
+export const VistaGerente = ({ toggleColorMode }) => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const handleLogout = () => {
@@ -18,24 +21,38 @@ export const VistaGerente = () => {
     navigate("/");
   };
   return (
-    <div>
-      <NotificationListener />
-      <h1>VistaGerente</h1>
-      <Kardex />
-      <h3>Movimientos totales por día</h3>
-      <MovimientosXDia />
-      <h3>Salidas totales por día</h3>
-      <SalidasXDia />
-      <h3>Entradas totales por día</h3>
-      <EntradasXDia />
-      <h3>Lotes actuales</h3>
-      <LotesActuales />
-      <h3>Productos por vencer</h3>
-      <ProductosPorVencer />
-      <h3>Productos bajo stock mínimo</h3>
-      <ProductosBajoStockMinimo />
+    <Box display={"flex"} flexDirection={"column"}>
+      {/* Botón para alternar el modo */}
+      <Box alignSelf="flex-end">
+        <IconButton onClick={toggleColorMode} color="inherit">
+          {/* Muestra el icono basado en el tema actual */}
+          {localStorage.getItem("theme") === "dark" ? (
+            <Brightness7 />
+          ) : (
+            <Brightness4 />
+          )}
+        </IconButton>
+      </Box>
 
-      <button onClick={handleLogout}>Cerrar Sesión</button>
-    </div>
+      <div>
+        <NotificationListener />
+        <h1>VistaGerente</h1>
+        <Kardex />
+        <h3>Movimientos totales por día</h3>
+        <MovimientosXDia />
+        <h3>Salidas totales por día</h3>
+        <SalidasXDia />
+        <h3>Entradas totales por día</h3>
+        <EntradasXDia />
+        <h3>Lotes actuales</h3>
+        <LotesActuales />
+        <h3>Productos por vencer</h3>
+        <ProductosPorVencer />
+        <h3>Productos bajo stock mínimo</h3>
+        <ProductosBajoStockMinimo />
+
+        <button onClick={handleLogout}>Cerrar Sesión</button>
+      </div>
+    </Box>
   );
 };

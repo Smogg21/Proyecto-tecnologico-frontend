@@ -6,11 +6,18 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Button from "@mui/material/Button";
-import { Alert, Box, Grid, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Brightness4, Brightness7, Person, Lock } from "@mui/icons-material";
 
-export const Login = ({toggleColorMode}) => {
-
+export const Login = ({ toggleColorMode }) => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -55,88 +62,94 @@ export const Login = ({toggleColorMode}) => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      bgcolor="background.default"
-      color="text.primary"
-      padding={2}
-    >
-       {/* Botón para alternar el modo */}
-       <Box alignSelf="flex-end">
+    <Box display={"flex"} flexDirection={"column"}>
+      {/* Botón para alternar el modo */}
+      <Box alignSelf="flex-end">
         <IconButton onClick={toggleColorMode} color="inherit">
           {/* Muestra el icono basado en el tema actual */}
-          {localStorage.getItem('theme') === 'dark' ? <Brightness7 /> : <Brightness4 />}
+          {localStorage.getItem("theme") === "dark" ? (
+            <Brightness7 />
+          ) : (
+            <Brightness4 />
+          )}
         </IconButton>
       </Box>
-      <Typography variant="h4" gutterBottom>
-        Iniciar Sesión
-      </Typography>
-
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          width: "100%",
-          maxWidth: 360,
-          p: 3,
-          border: "1px solid #ccc",
-          borderRadius: 2,
-          boxShadow: 1,
-        }}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minHeight="100vh"
+        bgcolor="background.default"
+        color="text.primary"
+        padding={2}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              type="text"
-              label="Usuario"
-              value={Usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <Person />
-                  </InputAdornment>
-                ),
-              }}
-              required
-              fullWidth
-            />
-          </Grid>
+        <Typography variant="h4" gutterBottom>
+          Iniciar Sesión
+        </Typography>
 
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              type="password"
-              label="Contraseña"
-              value={Contraseña}
-              onChange={(e) => setContraseña(e.target.value)}
-              required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <Lock />
-                  </InputAdornment>
-                ),
-              }}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button fullWidth variant="contained" type="submit">
-              Iniciar Sesión
-            </Button>
-          </Grid>
-          {error && (
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            width: "100%",
+            maxWidth: 360,
+            p: 3,
+            border: "1px solid #ccc",
+            borderRadius: 2,
+            boxShadow: 1,
+          }}
+        >
+          <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Alert severity="error">{error}</Alert>
+              <TextField
+                variant="outlined"
+                type="text"
+                label="Usuario"
+                value={Usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Person />
+                    </InputAdornment>
+                  ),
+                }}
+                required
+                fullWidth
+              />
             </Grid>
-          )}
-        </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                type="password"
+                label="Contraseña"
+                value={Contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
+                required
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Lock />
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button fullWidth variant="contained" type="submit">
+                Iniciar Sesión
+              </Button>
+            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Alert severity="error">{error}</Alert>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       </Box>
     </Box>
   );

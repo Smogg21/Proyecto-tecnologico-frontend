@@ -65,7 +65,7 @@ function App() {
             path="/vistaOperador"
             element={
               <PrivateRoute roles={[1, 2]}>
-                <VistaOperador />
+                <VistaOperador  toggleColorMode={toggleColorMode}/>
               </PrivateRoute>
             }
           />
@@ -113,7 +113,7 @@ function App() {
             path="/vistaGerente"
             element={
               <PrivateRoute roles={[1, 3]}>
-                <VistaGerente />
+                <VistaGerente  toggleColorMode={toggleColorMode}/>
               </PrivateRoute>
             }
           />
@@ -121,7 +121,7 @@ function App() {
             path="/vistaAdministrador"
             element={
               <PrivateRoute roles={[1]}>
-                <VistaAdministrador />
+                <VistaAdministrador  toggleColorMode={toggleColorMode}/>
               </PrivateRoute>
             }
           />
