@@ -1,7 +1,7 @@
-import "./App.css";
+// import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import NotificationListener from "./Components/NotificationListener"; 
+import NotificationListener from "./Components/NotificationListener.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { Login } from "./Views/Login";
 import { VistaOperador } from "./Views/VistaOperador";
@@ -22,149 +22,169 @@ import { NuevoUsuario } from "./Views/NuevoUsuario";
 import { EditarUsuario } from "./Views/EditarUsuario";
 import { NuevaCategoria } from "./Views/NuevaCategoria";
 import { EditarCategoria } from "./Views/EditarCategoria";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import { getTheme } from "./theme";
+import { useMemo, useState } from "react";
 
 function App() {
+  const [mode, setMode] = useState(() => {
+    const savedMode = localStorage.getItem('theme');
+    return savedMode ? savedMode : 'light';
+  });
+
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  const toggleColorMode = () => {
+    setMode((prevMode) => {
+      const newMode = prevMode === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', newMode);
+      return newMode;
+    });
+  };
+
   return (
-    <BrowserRouter>
-      {/*Notificaciones*/}
-      <NotificationListener />
-      <ToastContainer />
-      <Routes>
-        {/* Ruta Pública para Login */}
-        <Route
-          path="/"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        {/*Notificaciones*/}
+        <ToastContainer />
+        <Routes>
+          {/* Ruta Pública para Login */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Login toggleColorMode={toggleColorMode} />
+              </PublicRoute>
+            }
+          />
 
-        <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* Rutas Protegidas */}
-        <Route
-          path="/vistaOperador"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <VistaOperador />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/inventario"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <VistaInventario />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/nuevoLote"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <NuevoLote />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/nuevoProducto"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <NuevoProducto />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/registrarMovimiento"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <RegistrarMovimiento />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/verMovimientos"
-          element={
-            <PrivateRoute roles={[1, 2]}>
-              <VistaMovimientos />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/vistaGerente"
-          element={
-            <PrivateRoute roles={[1, 3]}>
-              <VistaGerente />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/vistaAdministrador"
-          element={
-            <PrivateRoute roles={[1]}>
-              <VistaAdministrador />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/vistaGestionSistema"
-          element={
-            <PrivateRoute roles={[1]}>
-              <VistaGestionSistema />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/nuevaCategoria"
-          element={
-            <PrivateRoute roles={[1]}>
-              <NuevaCategoria />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/editarCategoria"
-          element={
-            <PrivateRoute roles={[1]}>
-              <EditarCategoria />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/vistaGestionUsuarios"
-          element={
-            <PrivateRoute roles={[1]}>
-              <VistaGestionUsuarios />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/nuevoUsuario"
-          element={
-            <PrivateRoute roles={[1]}>
-              <NuevoUsuario />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/editarUsuario"
-          element={
-            <PrivateRoute roles={[1]}>
-              <EditarUsuario />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/nuevaContraseña"
-          element={
-            <PrivateRoute roles={[1]}>
-              <NuevaContraseña />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          {/* Rutas Protegidas */}
+          <Route
+            path="/vistaOperador"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <VistaOperador />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/inventario"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <VistaInventario />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevoLote"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <NuevoLote />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevoProducto"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <NuevoProducto />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/registrarMovimiento"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <RegistrarMovimiento />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/verMovimientos"
+            element={
+              <PrivateRoute roles={[1, 2]}>
+                <VistaMovimientos />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vistaGerente"
+            element={
+              <PrivateRoute roles={[1, 3]}>
+                <VistaGerente />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vistaAdministrador"
+            element={
+              <PrivateRoute roles={[1]}>
+                <VistaAdministrador />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vistaGestionSistema"
+            element={
+              <PrivateRoute roles={[1]}>
+                <VistaGestionSistema />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevaCategoria"
+            element={
+              <PrivateRoute roles={[1]}>
+                <NuevaCategoria />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editarCategoria"
+            element={
+              <PrivateRoute roles={[1]}>
+                <EditarCategoria />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vistaGestionUsuarios"
+            element={
+              <PrivateRoute roles={[1]}>
+                <VistaGestionUsuarios />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevoUsuario"
+            element={
+              <PrivateRoute roles={[1]}>
+                <NuevoUsuario />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editarUsuario"
+            element={
+              <PrivateRoute roles={[1]}>
+                <EditarUsuario />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevaContraseña"
+            element={
+              <PrivateRoute roles={[1]}>
+                <NuevaContraseña />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
