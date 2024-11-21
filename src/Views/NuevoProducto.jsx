@@ -140,7 +140,10 @@ export const NuevoProducto = () => {
       elevation={3}
       sx={{
         maxWidth: "600px",
-        margin: "0 auto",
+        margin: { 
+          xs: "16px",      // Margen de 16px en pantallas extra pequeñas (móviles)
+          sm: "24px auto", // Margen superior e inferior de 24px y centrado horizontalmente en pantallas pequeñas y mayores
+        },
         padding: "20px",
         mt: 4,
       }}
