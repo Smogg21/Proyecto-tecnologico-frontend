@@ -8,35 +8,34 @@ import { LotesActuales } from "../Charts/LotesActuales";
 import { ProductosPorVencer } from "../Charts/ProductosPorVencer";
 import { ProductosBajoStockMinimo } from "../Charts/ProductosBajoStockMinimo";
 import { Kardex } from "../Components/Kardex";
+import NotificationListener from "../Components/NotificationListener";
 
-
-
-export const VistaGerente = () =>{
+export const VistaGerente = () => {
   const navigate = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
-  return(
+  return (
     <div>
+      <NotificationListener />
       <h1>VistaGerente</h1>
-      <Kardex/>
+      <Kardex />
       <h3>Movimientos totales por día</h3>
-      <MovimientosXDia/>
+      <MovimientosXDia />
       <h3>Salidas totales por día</h3>
-      <SalidasXDia/>
+      <SalidasXDia />
       <h3>Entradas totales por día</h3>
-      <EntradasXDia/>
+      <EntradasXDia />
       <h3>Lotes actuales</h3>
-      <LotesActuales/>
+      <LotesActuales />
       <h3>Productos por vencer</h3>
-      <ProductosPorVencer/>
+      <ProductosPorVencer />
       <h3>Productos bajo stock mínimo</h3>
-      <ProductosBajoStockMinimo/>
+      <ProductosBajoStockMinimo />
 
       <button onClick={handleLogout}>Cerrar Sesión</button>
-
     </div>
-  )
-}
+  );
+};

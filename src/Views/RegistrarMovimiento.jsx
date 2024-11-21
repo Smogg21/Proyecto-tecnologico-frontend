@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLotes } from "../Hooks/useLotes";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
+import NotificationListener from "../Components/NotificationListener";
 
 export const RegistrarMovimiento = () => {
   // Estados para manejar los campos del formulario
@@ -229,6 +230,7 @@ export const RegistrarMovimiento = () => {
         borderRadius: "8px",
       }}
     >
+      <NotificationListener />
       <h1>Registrar Movimiento de Inventario</h1>
 
       {/* Mostrar mensajes de éxito o error */}

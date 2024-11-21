@@ -3,6 +3,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { useCategorias } from "../Hooks/useCategorias";
 import { useNavigate } from "react-router-dom";
+import NotificationListener from "../Components/NotificationListener";
 
 export const NuevoProducto = () => {
   const { categorias, loading, error: categoriasError } = useCategorias();
@@ -168,6 +169,7 @@ export const NuevoProducto = () => {
         borderRadius: "8px",
       }}
     >
+      <NotificationListener />
       <h1>Nuevo Producto</h1>
       {mensaje && (
         <div

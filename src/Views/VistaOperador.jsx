@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import NotificationListener from "../Components/NotificationListener";
 
 export const VistaOperador = () => {
   const navigate = useNavigate();
@@ -25,8 +26,10 @@ export const VistaOperador = () => {
 
   return (
     <div>
+      <NotificationListener />
+
       <h1>Vista operador</h1>
-      <div >
+      <div>
         <div
           style={{
             display: "flex",
@@ -35,8 +38,10 @@ export const VistaOperador = () => {
             margin: "20px",
           }}
         >
-          <button onClick={goToInventory} className="button1">Ver Inventario</button>
-          <button onClick={goToVerMovimientos}  className="button1">
+          <button onClick={goToInventory} className="button1">
+            Ver Inventario
+          </button>
+          <button onClick={goToVerMovimientos} className="button1">
             Ver Movimiento Inventario
           </button>
         </div>
@@ -48,18 +53,25 @@ export const VistaOperador = () => {
             margin: "20px",
           }}
         >
-          <button onClick={goToNuevoLote} className="button2">Registrar Nuevo Lote</button>
+          <button onClick={goToNuevoLote} className="button2">
+            Registrar Nuevo Lote
+          </button>
 
           <button onClick={goToMovimientoInventario} className="button2">
             Registrar Movimiento Inventario
           </button>
 
-          <button onClick={() => navigate("/nuevoProducto")} className="button2">
+          <button
+            onClick={() => navigate("/nuevoProducto")}
+            className="button2"
+          >
             Registrar Nuevo Producto
           </button>
         </div>
       </div>
-      <button onClick={handleLogout} style={{ marginTop: "10px" }}>Cerrar Sesión</button>
+      <button onClick={handleLogout} style={{ marginTop: "10px" }}>
+        Cerrar Sesión
+      </button>
     </div>
   );
 };

@@ -1,23 +1,28 @@
+/* eslint-disable react/prop-types */
 // src/Views/Login.js
-import { useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { useState, useContext } from "react";
+import axios from "axios";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Button from "@mui/material/Button";
+import { Alert, Box, Grid, IconButton, TextField, Typography } from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 
-export const Login = () => {
+export const Login = ({toggleColorMode}) => {
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [Usuario, setUsuario] = useState('');
-  const [Contraseña, setContraseña] = useState('');
-  const [error, setError] = useState('');
+  const [Usuario, setUsuario] = useState("");
+  const [Contraseña, setContraseña] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post("http://localhost:5000/api/login", {
         Usuario,
         Contraseña,
       });
@@ -26,55 +31,99 @@ export const Login = () => {
       login(response.data.token);
       const decodedToken = jwtDecode(response.data.token);
       // Redireccionar al dashboard o a la ruta protegida
-      if( decodedToken.IdRol == 1){
-        navigate('/vistaAdministrador');
+      switch (decodedToken.IdRol) {
+        case 1:
+          navigate("/vistaAdministrador");
+          break;
+        case 2:
+          navigate("/vistaOperador");
+          break;
+        case 3:
+          navigate("/vistaGerente");
+          break;
+        default:
+          setError("Rol de usuario no reconocido.");
       }
-      if( decodedToken.IdRol == 2){
-        navigate('/vistaOperador');
-      }
-      if( decodedToken.IdRol == 3){
-        navigate('/vistaGerente');
-      }
-
     } catch (err) {
-
-       // Manejar el mensaje de error específico del backend
-       if (err.response && err.response.data && err.response.data.message) {
+      // Manejar el mensaje de error específico del backend
+      if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError('Credenciales inválidas o error en el servidor.');
+        setError("Credenciales inválidas o error en el servidor.");
       }
     }
   };
 
   return (
-    <div className="login-container" style={{width: '310px'}}> 
-      <h2>Iniciar Sesión</h2>
-      
-      <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', border: '1px solid #ccc', padding: '10px'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <label>Usuario:</label>
-          <input
-            type="text"
-            value={Usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            required
-          />
-        </div>
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <label>Contraseña:</label>
-          <input
-            type="password"
-            value={Contraseña}
-            onChange={(e) => setContraseña(e.target.value)}
-            required
-          />
-        </div>
-        <br />
-        <button type="submit">Iniciar Sesión</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      bgcolor="background.default"
+      color="text.primary"
+      padding={2}
+    >
+       {/* Botón para alternar el modo */}
+       <Box alignSelf="flex-end">
+        <IconButton onClick={toggleColorMode} color="inherit">
+          {/* Muestra el icono basado en el tema actual */}
+          {localStorage.getItem('theme') === 'dark' ? <Brightness7 /> : <Brightness4 />}
+        </IconButton>
+      </Box>
+      <Typography variant="h4" gutterBottom>
+        Iniciar Sesión
+      </Typography>
 
-    </div>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: "100%",
+          maxWidth: 360,
+          p: 3,
+          border: "1px solid #ccc",
+          borderRadius: 2,
+          boxShadow: 1,
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              type="text"
+              label="Usuario"
+              value={Usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+              required
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              type="password"
+              label="Contraseña"
+              value={Contraseña}
+              onChange={(e) => setContraseña(e.target.value)}
+              required
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button fullWidth variant="contained" type="submit">
+              Iniciar Sesión
+            </Button>
+          </Grid>
+          {error && (
+            <Grid item xs={12}>
+              <Alert severity="error">{error}</Alert>
+            </Grid>
+          )}
+        </Grid>
+      </Box>
+    </Box>
   );
 };
