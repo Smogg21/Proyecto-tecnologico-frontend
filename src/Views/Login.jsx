@@ -6,8 +6,8 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Button from "@mui/material/Button";
-import { Alert, Box, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { Alert, Box, Grid, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import { Brightness4, Brightness7, Person, Lock } from "@mui/icons-material";
 
 export const Login = ({toggleColorMode}) => {
 
@@ -96,6 +96,13 @@ export const Login = ({toggleColorMode}) => {
               label="Usuario"
               value={Usuario}
               onChange={(e) => setUsuario(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Person />
+                  </InputAdornment>
+                ),
+              }}
               required
               fullWidth
             />
@@ -109,6 +116,13 @@ export const Login = ({toggleColorMode}) => {
               value={Contraseña}
               onChange={(e) => setContraseña(e.target.value)}
               required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Lock />
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
             />
           </Grid>
