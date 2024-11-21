@@ -1,9 +1,7 @@
-// src/Pages/VistaInventario.jsx
-
 
 import { useNavigate } from "react-router-dom";
 import { VerInventario } from "../Components/VerInventario";
-import styles from './VistaInventario.module.css';
+import { Button, Box, Typography } from "@mui/material";
 
 export const VistaInventario = () => {
   const navigate = useNavigate();
@@ -13,14 +11,19 @@ export const VistaInventario = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Inventario</h1>
-        <button className="button2" onClick={regresar}>
+    <Box p={3}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h4">Inventario</Typography>
+        <Button variant="contained" color="primary" onClick={regresar}>
           Regresar
-        </button>
-      </header>
+        </Button>
+      </Box>
       <VerInventario />
-    </div>
+    </Box>
   );
 };

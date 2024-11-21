@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import  { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import NotificationListener from "../Components/NotificationListener";
+import { Button, Grid, Box, Typography } from "@mui/material";
 
 export const VistaOperador = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -25,53 +27,53 @@ export const VistaOperador = () => {
   };
 
   return (
-    <div>
+    <Box p={3}>
       <NotificationListener />
 
-      <h1>Vista operador</h1>
-      <div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            margin: "20px",
-          }}
-        >
-          <button onClick={goToInventory} className="button1">
+      <Typography variant="h4" align="center" gutterBottom>
+        Vista Operador
+      </Typography>
+
+      <Grid container spacing={2} justifyContent="center" mb={2}>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={goToInventory}>
             Ver Inventario
-          </button>
-          <button onClick={goToVerMovimientos} className="button1">
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={goToVerMovimientos}>
             Ver Movimiento Inventario
-          </button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            margin: "20px",
-          }}
-        >
-          <button onClick={goToNuevoLote} className="button2">
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} justifyContent="center" mb={2}>
+        <Grid item>
+          <Button variant="outlined" color="secondary" onClick={goToNuevoLote}>
             Registrar Nuevo Lote
-          </button>
-
-          <button onClick={goToMovimientoInventario} className="button2">
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="outlined" color="secondary" onClick={goToMovimientoInventario}>
             Registrar Movimiento Inventario
-          </button>
-
-          <button
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="outlined"
+            color="secondary"
             onClick={() => navigate("/nuevoProducto")}
-            className="button2"
           >
             Registrar Nuevo Producto
-          </button>
-        </div>
-      </div>
-      <button onClick={handleLogout} style={{ marginTop: "10px" }}>
-        Cerrar Sesión
-      </button>
-    </div>
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Box textAlign="center" mt={2}>
+        <Button variant="outlined" color="error" onClick={handleLogout}>
+          Cerrar Sesión
+        </Button>
+      </Box>
+    </Box>
   );
 };

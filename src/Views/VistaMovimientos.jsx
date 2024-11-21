@@ -1,25 +1,28 @@
-// src/Pages/VistaMovimientos.jsx
-
-import { useNavigate } from "react-router-dom";
-import { VerMovimientosInventario } from "../Components/VerMovimientosInventario";
-import styles from './VistaMovimientos.module.css';
+import { useNavigate } from 'react-router-dom';
+import { VerMovimientosInventario } from '../Components/VerMovimientosInventario';
+import { Button, Box, Typography } from '@mui/material';
 
 export const VistaMovimientos = () => {
   const navigate = useNavigate();
 
   const regresar = () => {
-    navigate("/VistaOperador");
+    navigate('/VistaOperador');
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Movimientos de Inventario</h1>
-        <button className="button2" onClick={regresar}>
+    <Box p={3}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h4">Movimientos de Inventario</Typography>
+        <Button variant="contained" color="primary" onClick={regresar}>
           Regresar
-        </button>
-      </header>
+        </Button>
+      </Box>
       <VerMovimientosInventario />
-    </div>
+    </Box>
   );
 };

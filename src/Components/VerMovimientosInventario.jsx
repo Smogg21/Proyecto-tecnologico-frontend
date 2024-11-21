@@ -1,57 +1,80 @@
-// src/Components/VerMovimientosInventario.jsx
-
 import { useMovimientos } from '../Hooks/useMovimientos';
-import styles from './VerMovimientosInventario.module.css';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 
 export const VerMovimientosInventario = () => {
   const { movimientos, error } = useMovimientos();
 
+  if (error) {
+    return (
+      <Box mt={2} textAlign="center">
+        <Typography color="error" role="alert">
+          {error}
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!movimientos) {
+    return (
+      <Box mt={2} display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <div className={styles.tableContainer}>
-      {error ? (
-        <p className={styles.error} role="alert">{error}</p>
-      ) : (
-        <table className={styles.table} aria-label="Movimientos de Inventario">
-          <thead>
-            <tr>
-              <th>Id Movimiento</th>
-              <th>Id Lote</th>
-              <th>Producto</th>
-              <th>Número de serie</th>
-              <th>Tipo Movimiento</th>
-              <th>Cantidad</th>
-              <th>Fecha Movimiento</th>
-              <th>Notas</th>
-              <th>Id Usuario</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(movimientos) && movimientos.length > 0 ? (
-              movimientos.map((item) => (
-                <tr key={item.IdMovimiento}>
-                  <td>{item.IdMovimiento}</td>
-                  <td>{item.IdLote}</td>
-                  <td>{item.Nombre}</td>
-                  <td>{item.NumSerie}</td>
-                  <td>{item.TipoMovimiento}</td>
-                  <td>{item.Cantidad}</td>
-                  <td>
-                    {new Date(item.FechaMovimiento).toLocaleString()}
-                  </td>
-                  <td>{item.Notas || 'N/A'}</td>
-                  <td>{item.IdUsuario}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className={styles.noData}>
-                  No hay datos disponibles
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
-    </div>
+    <TableContainer component={Paper}>
+      <Table aria-label="Movimientos de Inventario">
+        <TableHead>
+          <TableRow>
+            <TableCell>Id Movimiento</TableCell>
+            <TableCell>Id Lote</TableCell>
+            <TableCell>Producto</TableCell>
+            <TableCell>Número de serie</TableCell>
+            <TableCell>Tipo Movimiento</TableCell>
+            <TableCell>Cantidad</TableCell>
+            <TableCell>Fecha Movimiento</TableCell>
+            <TableCell>Notas</TableCell>
+            <TableCell>Id Usuario</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Array.isArray(movimientos) && movimientos.length > 0 ? (
+            movimientos.map((item) => (
+              <TableRow key={item.IdMovimiento}>
+                <TableCell>{item.IdMovimiento}</TableCell>
+                <TableCell>{item.IdLote}</TableCell>
+                <TableCell>{item.Nombre}</TableCell>
+                <TableCell>{item.NumSerie}</TableCell>
+                <TableCell>{item.TipoMovimiento}</TableCell>
+                <TableCell>{item.Cantidad}</TableCell>
+                <TableCell>
+                  {new Date(item.FechaMovimiento).toLocaleString()}
+                </TableCell>
+                <TableCell>{item.Notas || 'N/A'}</TableCell>
+                <TableCell>{item.IdUsuario}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={9} align="center">
+                No hay datos disponibles
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };

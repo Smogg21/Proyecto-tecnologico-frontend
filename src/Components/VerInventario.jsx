@@ -1,60 +1,79 @@
-// src/Components/VerInventario.jsx
-
 
 import { useLotes } from "../Hooks/useLotes";
-import styles from './VerInventario.module.css';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 
 export const VerInventario = () => {
   const { lotes, error } = useLotes();
 
   if (error) {
-    return <p className={styles.error}>{error}</p>;
+    return (
+      <Box mt={2} textAlign="center">
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
   }
 
   if (!lotes) {
-    return <p className={styles.loading}>Cargando...</p>;
+    return (
+      <Box mt={2} display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Id Lote</th>
-            <th>Nombre</th>
-            <th>Cantidad Actual</th>
-            <th>Cantidad Inicial</th>
-            <th>Fecha de Caducidad</th>
-            <th>Fecha de Entrada Inicial</th>
-            <th>Usuario</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Id Lote</TableCell>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Cantidad Actual</TableCell>
+            <TableCell>Cantidad Inicial</TableCell>
+            <TableCell>Fecha de Caducidad</TableCell>
+            <TableCell>Fecha de Entrada Inicial</TableCell>
+            <TableCell>Usuario</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {Array.isArray(lotes) && lotes.length > 0 ? (
             lotes.map((item) => (
-              <tr key={item.IdLote}>
-                <td>{item.IdLote}</td>
-                <td>{item.Nombre}</td>
-                <td>{item.CantidadActual}</td>
-                <td>{item.CantidadInicial}</td>
-                <td>
+              <TableRow key={item.IdLote}>
+                <TableCell>{item.IdLote}</TableCell>
+                <TableCell>{item.Nombre}</TableCell>
+                <TableCell>{item.CantidadActual}</TableCell>
+                <TableCell>{item.CantidadInicial}</TableCell>
+                <TableCell>
                   {item.FechaCaducidad
                     ? new Date(item.FechaCaducidad).toLocaleDateString()
                     : "N/A"}
-                </td>
-                <td>{new Date(item.FechaEntrada).toLocaleString()}</td>
-                <td>{item.IdUsuario}</td>
-              </tr>
+                </TableCell>
+                <TableCell>
+                  {new Date(item.FechaEntrada).toLocaleString()}
+                </TableCell>
+                <TableCell>{item.IdUsuario}</TableCell>
+              </TableRow>
             ))
           ) : (
-            <tr>
-              <td colSpan="6" className={styles.noData}>
+            <TableRow>
+              <TableCell colSpan={7} align="center">
                 No hay datos disponibles
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
