@@ -49,7 +49,15 @@ export const VerInventario = () => {
         <TableBody>
           {Array.isArray(lotes) && lotes.length > 0 ? (
             lotes.map((item) => (
-              <TableRow key={item.IdLote}>
+              <TableRow key={item.IdLote}
+              hover // Activa el efecto hover predeterminado de MUI
+                sx={{
+                   // Cambia el cursor al pasar por encima
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Color de fondo al hacer hover
+                  },
+                }}
+              >
                 <TableCell>{item.IdLote}</TableCell>
                 <TableCell>{item.Nombre}</TableCell>
                 <TableCell>{item.CantidadActual}</TableCell>

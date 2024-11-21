@@ -52,7 +52,16 @@ export const VerMovimientosInventario = () => {
         <TableBody>
           {Array.isArray(movimientos) && movimientos.length > 0 ? (
             movimientos.map((item) => (
-              <TableRow key={item.IdMovimiento}>
+              <TableRow
+                key={item.IdMovimiento}
+                hover // Activa el efecto hover predeterminado de MUI
+                sx={{
+                   // Cambia el cursor al pasar por encima
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Color de fondo al hacer hover
+                  },
+                }}
+              >
                 <TableCell>{item.IdMovimiento}</TableCell>
                 <TableCell>{item.IdLote}</TableCell>
                 <TableCell>{item.Nombre}</TableCell>
