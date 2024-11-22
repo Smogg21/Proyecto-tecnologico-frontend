@@ -1,5 +1,6 @@
 // import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Login } from "./Views/Login";
@@ -21,28 +22,12 @@ import { NuevoUsuario } from "./Views/NuevoUsuario";
 import { EditarUsuario } from "./Views/EditarUsuario";
 import { NuevaCategoria } from "./Views/NuevaCategoria";
 import { EditarCategoria } from "./Views/EditarCategoria";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { getTheme } from "./theme";
-import { useMemo, useState } from "react";
+import {  CssBaseline } from "@mui/material";
+
 
 function App() {
-  const [mode, setMode] = useState(() => {
-    const savedMode = localStorage.getItem('theme');
-    return savedMode ? savedMode : 'light';
-  });
-
-  const theme = useMemo(() => getTheme(mode), [mode]);
-
-  const toggleColorMode = () => {
-    setMode((prevMode) => {
-      const newMode = prevMode === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newMode);
-      return newMode;
-    });
-  };
-
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <CssBaseline />
       <BrowserRouter>
         {/*Notificaciones*/}
@@ -53,7 +38,7 @@ function App() {
             path="/"
             element={
               <PublicRoute>
-                <Login toggleColorMode={toggleColorMode} />
+                <Login  />
               </PublicRoute>
             }
           />
@@ -65,7 +50,7 @@ function App() {
             path="/vistaOperador"
             element={
               <PrivateRoute roles={[1, 2]}>
-                <VistaOperador  toggleColorMode={toggleColorMode}/>
+                <VistaOperador/>
               </PrivateRoute>
             }
           />
@@ -113,7 +98,7 @@ function App() {
             path="/vistaGerente"
             element={
               <PrivateRoute roles={[1, 3]}>
-                <VistaGerente  toggleColorMode={toggleColorMode}/>
+                <VistaGerente  />
               </PrivateRoute>
             }
           />
@@ -121,7 +106,7 @@ function App() {
             path="/vistaAdministrador"
             element={
               <PrivateRoute roles={[1]}>
-                <VistaAdministrador  toggleColorMode={toggleColorMode}/>
+                <VistaAdministrador  />
               </PrivateRoute>
             }
           />
@@ -183,7 +168,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
-    </ThemeProvider>
+    </>
   );
 }
 
