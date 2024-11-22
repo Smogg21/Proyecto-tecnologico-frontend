@@ -1,16 +1,17 @@
-
 import { OperadorLayout } from "../Layout/OperadorLayout";
 import { Typography } from "@mui/material";
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 export const VistaOperador = () => {
-  const toggleColorMode = () => {
-    // Implementación de cambio de tema si aplica
-  };
+  const { auth } = useContext(AuthContext);
+
+
 
   return (
-    <OperadorLayout toggleColorMode={toggleColorMode}>
+    <OperadorLayout >
       <Typography variant="h4" align="center" gutterBottom>
-        Bienvenido a la Vista Operador
+        {auth.isAuthenticated && auth.user ? `Bienvenido, operador "${auth.user.Usuario}"` : 'Bienvenido, Operador'}
       </Typography>
       {/* Puedes agregar contenido adicional aquí */}
     </OperadorLayout>

@@ -1,56 +1,140 @@
-import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useContext, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+  Alert,
+} from "@mui/material";
+import { Menu as MenuIcon, Brightness4, Brightness7, Category, Edit, PersonAdd, ManageAccounts, Password, ArrowBack } from "@mui/icons-material";
+import PropTypes from 'prop-types';
+import { ColorModeContext } from "../contexts/ColorModeContext";
 
 export const VistaGestionSistema = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const mensaje = location.state?.mensaje;
-  const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const colorMode = useContext(ColorModeContext);
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
+
+  const menuItems = [
+    { 
+      text: "Agregar categoría", 
+      path: "/nuevaCategoria",
+      icon: <Category />
+    },
+    { 
+      text: "Editar categoría", 
+      path: "/editarCategoria",
+      icon: <Edit />
+    },
+    { 
+      text: "Agregar Usuario", 
+      path: "/nuevoUsuario",
+      icon: <PersonAdd />
+    },
+    { 
+      text: "Editar Usuario", 
+      path: "/editarUsuario",
+      icon: <ManageAccounts />
+    },
+    { 
+      text: "Cambiar contraseña a usuario", 
+      path: "/nuevaContraseña",
+      icon: <Password />
+    },
+    { 
+      text: "Regresar", 
+      path: "/vistaAdministrador",
+      icon: <ArrowBack />
+    },
+  ];
 
   return (
-    <div>
-      <h1>Gestion del Sistema</h1>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px",
-          margin: "20px",
-        }}
-      >
-        <button onClick={() => navigate("/nuevaCategoria")} className="button1">
-          Agregar categoria
-        </button>
-        <button onClick={() => navigate("/editarCategoria")} className="button1">
-          Editar categoria
-        </button>
-        <button
-          onClick={() => navigate("/vistaGestionUsuarios")}
-          className="button1"
-        >
-          Ir a gestion de usuarios
-        </button>
-      </div>
-      <button
-          onClick={() => navigate("/vistaAdministrador")}
-        >
-          Regresar
-        </button>
+    <Box>
+      {/* AppBar con Drawer */}
+      <AppBar position="static">
+        <Toolbar>
+          {/* Botón para abrir el Drawer */}
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        {mensaje && (
-        <div
-          style={{
-            padding: "10px",
-            marginTop: "15px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
+          {/* Título */}
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Gestión del Sistema
+          </Typography>
+
+          {/* Botón para alternar el modo */}
+          <IconButton onClick={colorMode.toggleColorMode} color="inherit">
+            {localStorage.getItem("theme") === "dark" ? (
+              <Brightness7 />
+            ) : (
+              <Brightness4 />
+            )}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      {/* Drawer lateral */}
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
         >
-          {mensaje.texto}
-        </div>
-      )}
-    </div>
+          <List>
+            {menuItems.map((item) => (
+              <ListItem
+                button
+                key={item.text}
+                onClick={() => navigate(item.path)}
+              >
+                <IconButton size="small" sx={{ mr: 2 }}>
+                  {item.icon}
+                </IconButton>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+
+      {/* Contenido principal */}
+      <Box p={2}>
+        {mensaje && (
+          <Alert
+            severity={mensaje.tipo === "exito" ? "success" : "error"}
+            sx={{ mb: 2 }}
+          >
+            {mensaje.texto}
+          </Alert>
+        )}
+
+        <Typography variant="h4" align="center" gutterBottom>
+          Gestión del Sistema
+        </Typography>
+      </Box>
+    </Box>
   );
+};
+
+VistaGestionSistema.propTypes = {
+  toggleColorMode: PropTypes.func.isRequired
 };

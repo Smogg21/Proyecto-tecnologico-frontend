@@ -65,6 +65,7 @@ export const AuthProvider = ({ children }) => {
       user: decoded,
     });
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    console.log(decoded);
   };
 
   return (
