@@ -2,6 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+} from "@mui/material";
 
 export const NuevaCategoria = () => {
   const navigate = useNavigate();
@@ -61,73 +68,56 @@ export const NuevaCategoria = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Box
+      sx={{
+        maxWidth: 500,
         margin: "0 auto",
-        padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        padding: 2,
+        backgroundColor: "background.paper",
+        borderRadius: 2,
       }}
     >
-      <h1>Nueva Categoría</h1>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Nueva Categoría
+      </Typography>
       {mensaje && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
-        >
+        <Alert severity={mensaje.tipo === "exito" ? "success" : "error"} sx={{ mb: 2 }}>
           {mensaje.texto}
-        </div>
+        </Alert>
       )}
-
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre</label>
-        <input
-          type="text"
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Nombre"
           name="nombre"
           value={formValues.nombre}
           onChange={handleInputChange}
           required
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          fullWidth
+          margin="normal"
         />
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>Descripción</label>
-        <textarea
+        <TextField
+          label="Descripción"
           name="descripcion"
           value={formValues.descripcion}
           onChange={handleInputChange}
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
+          multiline
+          rows={4}
+          fullWidth
+          margin="normal"
         />
-
-        <button type="submit" className="button3" style={{ marginTop: "30px" }}>
-          Crear Categoría
-        </button>
-
-        <button
-          type="button"
-          onClick={() => navigate("/vistaGestionSistema")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
+        <Box display="flex" justifyContent="space-between" mt={3}>
+          <Button variant="contained" color="primary" type="submit">
+            Crear Categoría
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate("/vistaGestionSistema")}
+          >
+            Regresar
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };

@@ -1,14 +1,23 @@
 // src/Views/NuevaContraseña.js
-
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useUsuarios } from '../Hooks/useUsuarios';
-import Select from 'react-select';
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useUsuarios } from "../Hooks/useUsuarios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+  CircularProgress,
+  useTheme,
+} from "@mui/material";
+import Select from "react-select";
 
 export const NuevaContraseña = () => {
-  const { usuarios, loadingUsuarios } = useUsuarios();
+  const { usuarios, loading } = useUsuarios();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const opcionesUsuarios = usuarios.map((usuario) => ({
     value: usuario.Usuario,
@@ -16,9 +25,8 @@ export const NuevaContraseña = () => {
   }));
 
   const [selectedUsuario, setSelectedUsuario] = useState(null);
-  const [NuevaContraseña, setNuevaContraseña] = useState('');
-  const [ConfirmarContraseña, setConfirmarContraseña] = useState('');
-  const [error, setError] = useState('');
+  const [NuevaContraseña, setNuevaContraseña] = useState("");
+  const [ConfirmarContraseña, setConfirmarContraseña] = useState("");
   const [mensaje, setMensaje] = useState(null);
 
   const handleUsuarioSelectChange = (selected) => {
@@ -27,28 +35,41 @@ export const NuevaContraseña = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setMensaje(null);
 
     if (NuevaContraseña !== ConfirmarContraseña) {
-      setError('Las contraseñas no coinciden.');
+      setMensaje({
+        tipo: "error",
+        texto: "Las contraseñas no coinciden.",
+      });
       return;
     }
 
     if (!selectedUsuario) {
-      setError('Por favor, selecciona un usuario.');
+      setMensaje({
+        tipo: "error",
+        texto: "Por favor, selecciona un usuario.",
+      });
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/restablecerPassword', {
-        Usuario: selectedUsuario.value,
-        NuevaContraseña,
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/restablecerPassword",
+        {
+          Usuario: selectedUsuario.value,
+          NuevaContraseña,
+        }
+      );
 
       if (response.status === 200) {
-        navigate("/vistaGestionUsuarios", {
-          state: { mensaje: { tipo: "exito", texto: "Contraseña actualizada exitosamente." } },
+        navigate("/vistaGestionSistema", {
+          state: {
+            mensaje: {
+              tipo: "exito",
+              texto: "Contraseña actualizada exitosamente.",
+            },
+          },
         });
       } else {
         setMensaje({
@@ -57,143 +78,132 @@ export const NuevaContraseña = () => {
         });
       }
     } catch (error) {
-      console.error('Error al restablecer la contraseña', error);
-      const errorMessage = error.response?.data?.message || 'Error al restablecer la contraseña. Por favor, inténtalo de nuevo.';
-      setError(errorMessage);
+      console.error("Error al restablecer la contraseña", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Error al restablecer la contraseña. Por favor, inténtalo de nuevo.";
+      setMensaje({
+        tipo: "error",
+        texto: errorMessage,
+      });
     }
   };
 
-  const selectStyles = {
+  const customSelectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      borderColor: theme.palette.divider,
+      minHeight: '56px',
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? theme.palette.action.hover
+        : theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      cursor: 'pointer',
     }),
     input: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
     }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: theme.palette.text.disabled,
+    }),
+    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Box
+      sx={{
+        maxWidth: 500,
         margin: "0 auto",
-        padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        padding: 2,
+        backgroundColor: "background.paper",
+        borderRadius: 2,
       }}
     >
-      <h1>Restablecer Contraseña</h1>
-      {error && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: "red",
-            border: "1px solid red",
-            borderRadius: "4px",
-            backgroundColor: "#f8d7da",
-          }}
-        >
-          {error}
-        </div>
-      )}
+      <Typography variant="h4" component="h1" gutterBottom>
+        Restablecer Contraseña
+      </Typography>
       {mensaje && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
-        >
+        <Alert severity={mensaje.tipo === "exito" ? "success" : "error"} sx={{ mb: 2 }}>
           {mensaje.texto}
-        </div>
+        </Alert>
       )}
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <label style={{ marginBottom: "5px" }}>Usuario</label>
-        {loadingUsuarios ? (
-          <p>Cargando Usuarios...</p>
-        ) : (
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <form onSubmit={handleSubmit}>
           <Select
             options={opcionesUsuarios}
             value={selectedUsuario}
             onChange={handleUsuarioSelectChange}
-            styles={selectStyles}
             placeholder="Selecciona un usuario"
+            styles={customSelectStyles}
+            theme={(selectTheme) => ({
+              ...selectTheme,
+              colors: {
+                ...selectTheme.colors,
+                primary: theme.palette.primary.main,
+                neutral0: theme.palette.background.paper,
+                neutral80: theme.palette.text.primary,
+                neutral20: theme.palette.divider,
+                neutral60: theme.palette.text.secondary,
+                neutral40: theme.palette.text.secondary,
+                dangerLight: theme.palette.error.light,
+                danger: theme.palette.error.main,
+              },
+            })}
+            menuPortalTarget={document.body}
           />
-        )}
+          <TextField
+            label="Nueva Contraseña"
+            type="password"
+            value={NuevaContraseña}
+            onChange={(e) => setNuevaContraseña(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Confirmar Contraseña"
+            type="password"
+            value={ConfirmarContraseña}
+            onChange={(e) => setConfirmarContraseña(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
 
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Nueva Contraseña
-        </label>
-        <input
-          type="password"
-          value={NuevaContraseña}
-          onChange={(e) => setNuevaContraseña(e.target.value)}
-          required
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-
-        <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-          Confirmar Contraseña
-        </label>
-        <input
-          type="password"
-          value={ConfirmarContraseña}
-          onChange={(e) => setConfirmarContraseña(e.target.value)}
-          required
-          style={{
-            padding: "8px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-
-        <button type="submit" className="button3" style={{ marginTop: "30px" }}>
-          Restablecer Contraseña
-        </button>
-
-        <button
-          onClick={() => navigate("/vistaGestionUsuarios")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
-      </form>
-    </div>
+          <Box display="flex" justifyContent="space-between" mt={3}>
+            <Button variant="contained" color="primary" type="submit">
+              Restablecer Contraseña
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate("/vistaGestionSistema")}
+            >
+              Regresar
+            </Button>
+          </Box>
+        </form>
+      )}
+    </Box>
   );
 };

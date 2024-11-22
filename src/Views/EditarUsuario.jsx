@@ -2,14 +2,25 @@
 import { useNavigate } from "react-router-dom";
 import { useRoles } from "../Hooks/useRoles";
 import { useUsuarios } from "../Hooks/useUsuarios";
-import Select from "react-select";
 import { useState } from "react";
 import axios from "axios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+  CircularProgress,
+  MenuItem,
+  useTheme,
+} from "@mui/material";
+import Select from "react-select";
 
 export const EditarUsuario = () => {
-  const { roles, loading } = useRoles();
-  const { usuarios, loadingUsuarios } = useUsuarios();
+  const { roles, loading: loadingRoles } = useRoles();
+  const { usuarios, loading: loadingUsuarios } = useUsuarios();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const opcionesRoles = roles.map((rol) => ({
     value: rol.IdRol,
@@ -36,7 +47,9 @@ export const EditarUsuario = () => {
     setSelectedUsuario(selected);
     // Obtener datos del usuario seleccionado
     try {
-      const response = await axios.get(`http://localhost:5000/api/usuarios/${selected.value}`);
+      const response = await axios.get(
+        `http://localhost:5000/api/usuarios/${selected.value}`
+      );
       const userData = response.data;
       setFormValues({
         usuario: userData.Usuario,
@@ -60,13 +73,9 @@ export const EditarUsuario = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, type, checked, value } = e.target;
+    const { name, value } = e.target;
 
-    if (type === "checkbox") {
-      setFormValues({ ...formValues, [name]: checked });
-    } else {
-      setFormValues({ ...formValues, [name]: value });
-    }
+    setFormValues({ ...formValues, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -127,8 +136,13 @@ export const EditarUsuario = () => {
       );
 
       if (response.status === 200) {
-        navigate("/vistaGestionUsuarios", {
-          state: { mensaje: { tipo: "exito", texto: "Usuario actualizado exitosamente." } },
+        navigate("/vistaGestionSistema", {
+          state: {
+            mensaje: {
+              tipo: "exito",
+              texto: "Usuario actualizado exitosamente.",
+            },
+          },
         });
       } else {
         setMensaje({
@@ -138,7 +152,8 @@ export const EditarUsuario = () => {
       }
     } catch (error) {
       console.error("Error al actualizar el usuario", error);
-      const errorMessage = error.response?.data?.message || "Error al actualizar el usuario.";
+      const errorMessage =
+        error.response?.data?.message || "Error al actualizar el usuario.";
       setMensaje({
         tipo: "error",
         texto: errorMessage,
@@ -146,169 +161,181 @@ export const EditarUsuario = () => {
     }
   };
 
-  const selectStyles = {
+  // Define estilos personalizados para react-select basados en el tema
+  const customSelectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      borderColor: theme.palette.divider,
+      minHeight: "56px",
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? theme.palette.action.hover
+        : theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      cursor: "pointer",
     }),
     input: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
     }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: theme.palette.text.disabled,
+    }),
+    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }), // Asegura que el menú esté por encima
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Box
+      sx={{
+        maxWidth: 500,
         margin: "0 auto",
-        padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        padding: 2,
+        backgroundColor: "background.paper",
+        borderRadius: 2,
       }}
     >
-      <h1>Editar Usuario</h1>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Editar Usuario
+      </Typography>
       {mensaje && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
+        <Alert
+          severity={mensaje.tipo === "exito" ? "success" : "error"}
+          sx={{ mb: 2 }}
         >
           {mensaje.texto}
-        </div>
+        </Alert>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginBottom: "5px" }}>Usuario</label>
-        {loadingUsuarios ? (
-          <p>Cargando Usuarios...</p>
-        ) : (
+      {loadingUsuarios ? (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <form onSubmit={handleSubmit}>
           <Select
             options={opcionesUsuarios}
             value={selectedUsuario}
             onChange={handleUsuarioSelectChange}
-            styles={selectStyles}
             placeholder="Selecciona un usuario"
+            styles={customSelectStyles} // Aplica estilos personalizados
+            theme={(selectTheme) => ({
+              ...selectTheme,
+              colors: {
+                ...selectTheme.colors,
+                primary: theme.palette.primary.main,
+                neutral0: theme.palette.background.paper,
+                neutral80: theme.palette.text.primary,
+                neutral20: theme.palette.divider,
+                neutral60: theme.palette.text.secondary,
+                neutral40: theme.palette.text.secondary,
+                dangerLight: theme.palette.error.light,
+                danger: theme.palette.error.main,
+              },
+            })}
+            menuPortalTarget={document.body} // Renderiza el menú en un portal
           />
-        )}
 
-        {selectedUsuario && (
-          <>
-            
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre</label>
-            <input
-              type="text"
-              name="nombre"
-              value={formValues.nombre}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-              Apellido Paterno
-            </label>
-            <input
-              type="text"
-              name="apellidoPaterno"
-              value={formValues.apellidoPaterno}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>Nombre de Usuario</label>
-            <input
-              type="text"
-              name="usuario"
-              value={formValues.usuario}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <label style={{ marginTop: "10px" }}>Rol</label>
-            {loading ? (
-              <p>Cargando Roles...</p>
-            ) : (
-              <Select
-                options={opcionesRoles}
-                value={selectedRol}
-                onChange={handleSelectChange}
-                styles={selectStyles}
-                placeholder="Selecciona un rol"
+          {selectedUsuario && (
+            <>
+              <TextField
+                label="Nombre"
+                name="nombre"
+                value={formValues.nombre}
+                onChange={handleInputChange}
+                required
+                fullWidth
+                margin="normal"
               />
-            )}
-
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>Estado</label>
-            <select
-              name="estado"
-              value={formValues.estado}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-                backgroundColor: "#4a4a4a",
-                color: "white",
-              }}
-            >
-              <option value="">Selecciona un estado</option>
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
-            </select>
-
-            <button type="submit" className="button3" style={{ marginTop: "30px" }}>
+              <TextField
+                label="Apellido Paterno"
+                name="apellidoPaterno"
+                value={formValues.apellidoPaterno}
+                onChange={handleInputChange}
+                required
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Nombre de Usuario"
+                name="usuario"
+                value={formValues.usuario}
+                onChange={handleInputChange}
+                required
+                fullWidth
+                margin="normal"
+              />
+              {loadingRoles ? (
+                <Box display="flex" justifyContent="center" mt={2}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <Box mt={2}>
+                  <Select
+                    options={opcionesRoles}
+                    value={selectedRol}
+                    onChange={handleSelectChange}
+                    placeholder="Selecciona un rol"
+                    styles={customSelectStyles} // Aplica estilos personalizados
+                    theme={(selectTheme) => ({
+                      ...selectTheme,
+                      colors: {
+                        ...selectTheme.colors,
+                        primary: theme.palette.primary.main,
+                        neutral0: theme.palette.background.paper,
+                        neutral80: theme.palette.text.primary,
+                        neutral20: theme.palette.divider,
+                        neutral60: theme.palette.text.secondary,
+                        neutral40: theme.palette.text.secondary,
+                        dangerLight: theme.palette.error.light,
+                        danger: theme.palette.error.main,
+                      },
+                    })}
+                    menuPortalTarget={document.body} // Renderiza el menú en un portal
+                  />
+                </Box>
+              )}
+              <TextField
+                label="Estado"
+                name="estado"
+                value={formValues.estado}
+                onChange={handleInputChange}
+                select
+                required
+                fullWidth
+                margin="normal"
+              >
+                <MenuItem value="Activo">Activo</MenuItem>
+                <MenuItem value="Inactivo">Inactivo</MenuItem>
+              </TextField>
+            </>
+          )}
+          <Box display="flex" justifyContent="space-between" mt={3}>
+            <Button variant="contained" color="primary" type="submit">
               Actualizar Usuario
-            </button>
-          </>
-        )}
-
-        <button
-          onClick={() => navigate("/vistaGestionUsuarios")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
-      </form>
-    </div>
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate("/vistaGestionSistema")}
+            >
+              Regresar
+            </Button>
+          </Box>
+        </form>
+      )}
+    </Box>
   );
 };

@@ -1,13 +1,25 @@
 // src/Views/EditarCategoria.js
 import { useNavigate } from "react-router-dom";
 import { useCategoriasTodas } from "../Hooks/useCategoriasTodas";
-import Select from "react-select";
-import { useState} from "react";
+import { useState } from "react";
 import axios from "axios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+  FormControlLabel,
+  Switch,
+  CircularProgress,
+  useTheme,
+} from "@mui/material";
+import Select from "react-select";
 
 export const EditarCategoria = () => {
   const { categorias, loading } = useCategoriasTodas();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const opcionesCategorias = categorias.map((categoria) => ({
     value: categoria.IdCategoria,
@@ -18,7 +30,7 @@ export const EditarCategoria = () => {
   const [formValues, setFormValues] = useState({
     nombre: "",
     descripcion: "",
-    estado: true, // Por defecto, asumimos que está activa
+    estado: true,
   });
 
   const [mensaje, setMensaje] = useState(null);
@@ -34,7 +46,7 @@ export const EditarCategoria = () => {
       setFormValues({
         nombre: categoriaData.Nombre,
         descripcion: categoriaData.Descripcion || "",
-        estado: categoriaData.Estado === "Activo", // Convertimos a booleano
+        estado: categoriaData.Estado === "Activo",
       });
     } catch (error) {
       console.error("Error al obtener los datos de la categoría", error);
@@ -46,7 +58,7 @@ export const EditarCategoria = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, checked, type } = e.target;
     setFormValues({
       ...formValues,
       [name]: type === "checkbox" ? checked : value,
@@ -104,142 +116,140 @@ export const EditarCategoria = () => {
     }
   };
 
-  const selectStyles = {
+  // Define estilos personalizados para react-select basados en el tema
+  const customSelectStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "#4a4a4a",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      borderColor: theme.palette.divider,
+      minHeight: '56px',
     }),
     menu: (provided) => ({
       ...provided,
-      backgroundColor: "#221f22",
-      color: "white",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#221f22"
-        : state.isFocused
-        ? "black"
-        : "gray",
-      color: "white",
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? theme.palette.action.hover
+        : theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      cursor: 'pointer',
     }),
     input: (provided) => ({
       ...provided,
-      color: "white",
+      color: theme.palette.text.primary,
     }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: theme.palette.text.disabled,
+    }),
+    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }), // Asegura que el menú esté por encima
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "500px",
+    <Box
+      sx={{
+        maxWidth: 500,
         margin: "0 auto",
-        padding: "20px",
-        backgroundColor: "#333",
-        color: "white",
-        borderRadius: "8px",
+        padding: 2,
+        backgroundColor: "background.paper",
+        borderRadius: 2,
       }}
     >
-      <h1>Editar Categoría</h1>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Editar Categoría
+      </Typography>
       {mensaje && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
-        >
+        <Alert severity={mensaje.tipo === "exito" ? "success" : "error"} sx={{ mb: 2 }}>
           {mensaje.texto}
-        </div>
+        </Alert>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        <label style={{ marginBottom: "5px" }}>Categoría</label>
-        {loading ? (
-          <p>Cargando Categorías...</p>
-        ) : (
+      {loading ? (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <form onSubmit={handleSubmit}>
           <Select
             options={opcionesCategorias}
             value={selectedCategoria}
             onChange={handleCategoriaSelectChange}
-            styles={selectStyles}
             placeholder="Selecciona una categoría"
+            styles={customSelectStyles} // Aplica estilos personalizados
+            theme={(selectTheme) => ({
+              ...selectTheme,
+              colors: {
+                ...selectTheme.colors,
+                primary: theme.palette.primary.main,
+                neutral0: theme.palette.background.paper,
+                neutral80: theme.palette.text.primary,
+                neutral20: theme.palette.divider,
+                neutral60: theme.palette.text.secondary,
+                neutral40: theme.palette.text.secondary,
+                dangerLight: theme.palette.error.light,
+                danger: theme.palette.error.main,
+              },
+            })}
+            menuPortalTarget={document.body} // Renderiza el menú en un portal
           />
-        )}
 
-        {selectedCategoria && (
-          <>
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-              Nombre
-            </label>
-            <input
-              type="text"
-              name="nombre"
-              value={formValues.nombre}
-              onChange={handleInputChange}
-              required
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-              Descripción
-            </label>
-            <textarea
-              name="descripcion"
-              value={formValues.descripcion}
-              onChange={handleInputChange}
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <label style={{ marginTop: "10px", marginBottom: "5px" }}>
-              Estado
-            </label>
-            <div style={{ display: "flex", alignItems: "center", justifyContent : "center" }}>
-              <input
-                type="checkbox"
-                name="estado"
-                checked={formValues.estado}
+          {selectedCategoria && (
+            <>
+              <TextField
+                label="Nombre"
+                name="nombre"
+                value={formValues.nombre}
                 onChange={handleInputChange}
-                style={{ marginRight: "10px" }}
+                required
+                fullWidth
+                margin="normal"
               />
-              <span>{formValues.estado ? "Activo" : "Inactivo"}</span>
-            </div>
+              <TextField
+                label="Descripción"
+                name="descripcion"
+                value={formValues.descripcion}
+                onChange={handleInputChange}
+                multiline
+                rows={4}
+                fullWidth
+                margin="normal"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formValues.estado}
+                    onChange={handleInputChange}
+                    name="estado"
+                    color="primary"
+                  />
+                }
+                label={formValues.estado ? "Activo" : "Inactivo"}
+                sx={{ mt: 2 }}
+              />
 
-            <button
-              type="submit"
-              className="button3"
-              style={{ marginTop: "30px" }}
-            >
-              Actualizar Categoría
-            </button>
-          </>
-        )}
-
-        <button
-          type="button"
-          onClick={() => navigate("/vistaGestionSistema")}
-          style={{ marginTop: "20px" }}
-        >
-          Regresar
-        </button>
-      </form>
-    </div>
+            </>
+          )}
+              <Box display="flex" justifyContent="space-between" mt={3}>
+                <Button variant="contained" color="primary" type="submit">
+                  Actualizar Categoría
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => navigate("/vistaGestionSistema")}
+                >
+                  Regresar
+                </Button>
+              </Box>
+        </form>
+      )}
+    </Box>
   );
 };

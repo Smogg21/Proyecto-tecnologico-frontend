@@ -17,7 +17,7 @@ import { Unauthorized } from "./Views/Unauthorized";
 import { VistaAdministrador } from "./Views/VistaAdministrador";
 import { NuevaContraseña } from "./Views/NuevaContraseña";
 import { VistaGestionSistema } from "./Views/VistaGestionSistema";
-import { VistaGestionUsuarios } from "./Views/VistaGestionUsuarios";
+
 import { NuevoUsuario } from "./Views/NuevoUsuario";
 import { EditarUsuario } from "./Views/EditarUsuario";
 import { NuevaCategoria } from "./Views/NuevaCategoria";
@@ -131,14 +131,6 @@ function App() {
             element={
               <PrivateRoute roles={[1]}>
                 <EditarCategoria />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/vistaGestionUsuarios"
-            element={
-              <PrivateRoute roles={[1]}>
-                <VistaGestionUsuarios />
               </PrivateRoute>
             }
           />
