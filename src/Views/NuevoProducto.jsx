@@ -1,5 +1,5 @@
 // src/Components/NuevoProducto.jsx
-import  { useState } from "react";
+import { useState } from "react";
 import { useCategorias } from "../Hooks/useCategorias";
 import { useNavigate } from "react-router-dom";
 import NotificationListener from "../Components/NotificationListener";
@@ -13,6 +13,7 @@ import {
   Paper,
   Autocomplete,
 } from "@mui/material";
+import { OperadorLayout } from "../Layout/OperadorLayout";
 
 export const NuevoProducto = () => {
   const { categorias, loading, error: categoriasError } = useCategorias();
@@ -136,144 +137,148 @@ export const NuevoProducto = () => {
   };
 
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        maxWidth: "600px",
-        margin: { 
-          xs: "16px",      // Margen de 16px en pantallas extra pequeñas (móviles)
-          sm: "24px auto", // Margen superior e inferior de 24px y centrado horizontalmente en pantallas pequeñas y mayores
-        },
-        padding: "20px",
-        mt: 4,
-      }}
-    >
-      <NotificationListener />
-      <Typography variant="h4" gutterBottom>
-        Nuevo Producto
-      </Typography>
-      {mensaje && (
-        <Box
-          sx={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor:
-              mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
-        >
-          {mensaje.texto}
-        </Box>
-      )}
-      {categoriasError && (
-        <Box
-          sx={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: "red",
-            border: "1px solid red",
-            borderRadius: "4px",
-            backgroundColor: "#f8d7da",
-          }}
-        >
-          {categoriasError}
-        </Box>
-      )}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Nombre"
-          name="nombre"
-          value={formValues.nombre}
-          onChange={handleInputChange}
-          required
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
-
-        <TextField
-          label="Descripción"
-          name="descripcion"
-          value={formValues.descripcion}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          multiline
-          rows={4}
-        />
-
-        {loading ? (
-          <Typography>Cargando categorías...</Typography>
-        ) : (
-          <Autocomplete
-            options={opcionesCategorias}
-            getOptionLabel={(option) => option.label}
-            value={selectedCategoria}
-            onChange={handleSelectChange}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Categoría"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                required
-              />
-            )}
-          />
+    <OperadorLayout>
+      <Paper
+        elevation={3}
+        sx={{
+          maxWidth: "600px",
+          margin: {
+            xs: "16px", // Margen de 16px en pantallas extra pequeñas (móviles)
+            sm: "24px auto", // Margen superior e inferior de 24px y centrado horizontalmente en pantallas pequeñas y mayores
+          },
+          padding: "20px",
+          mt: 4,
+        }}
+      >
+        <NotificationListener />
+        <Typography variant="h4" gutterBottom>
+          Nuevo Producto
+        </Typography>
+        {mensaje && (
+          <Box
+            sx={{
+              padding: "10px",
+              marginBottom: "15px",
+              color: mensaje.tipo === "exito" ? "green" : "red",
+              border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
+              borderRadius: "4px",
+              backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+            }}
+          >
+            {mensaje.texto}
+          </Box>
         )}
+        {categoriasError && (
+          <Box
+            sx={{
+              padding: "10px",
+              marginBottom: "15px",
+              color: "red",
+              border: "1px solid red",
+              borderRadius: "4px",
+              backgroundColor: "#f8d7da",
+            }}
+          >
+            {categoriasError}
+          </Box>
+        )}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Nombre"
+            name="nombre"
+            value={formValues.nombre}
+            onChange={handleInputChange}
+            required
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={formValues.hasNumSerie}
-              onChange={handleInputChange}
-              name="hasNumSerie"
-              color="primary"
+          <TextField
+            label="Descripción"
+            name="descripcion"
+            value={formValues.descripcion}
+            onChange={handleInputChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            multiline
+            rows={4}
+          />
+
+          {loading ? (
+            <Typography>Cargando categorías...</Typography>
+          ) : (
+            <Autocomplete
+              options={opcionesCategorias}
+              getOptionLabel={(option) => option.label}
+              value={selectedCategoria}
+              onChange={handleSelectChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Categoría"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  required
+                />
+              )}
             />
-          }
-          label="¿Tiene número de serie?"
-          sx={{ mt: 2 }}
-        />
+          )}
 
-        <TextField
-          label="Stock Mínimo"
-          type="number"
-          name="stockMinimo"
-          value={formValues.stockMinimo}
-          onChange={handleInputChange}
-          required
-          inputProps={{ min: 0 }}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formValues.hasNumSerie}
+                onChange={handleInputChange}
+                name="hasNumSerie"
+                color="primary"
+              />
+            }
+            label="¿Tiene número de serie?"
+            sx={{ mt: 2 }}
+          />
 
-        <TextField
-          label="Stock Máximo"
-          type="number"
-          name="stockMaximo"
-          value={formValues.stockMaximo}
-          onChange={handleInputChange}
-          required
-          inputProps={{ min: formValues.stockMinimo }}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <TextField
+            label="Stock Mínimo"
+            type="number"
+            name="stockMinimo"
+            value={formValues.stockMinimo}
+            onChange={handleInputChange}
+            required
+            inputProps={{ min: 0 }}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        <Box mt={2} display="flex" justifyContent="space-between">
-          <Button variant="contained" color="primary" type="submit">
-            Crear Producto
-          </Button>
-          <Button variant="outlined" onClick={() => navigate("/vistaOperador")}>
-            Regresar
-          </Button>
-        </Box>
-      </form>
-    </Paper>
+          <TextField
+            label="Stock Máximo"
+            type="number"
+            name="stockMaximo"
+            value={formValues.stockMaximo}
+            onChange={handleInputChange}
+            required
+            inputProps={{ min: formValues.stockMinimo }}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
+
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Button variant="contained" color="primary" type="submit">
+              Crear Producto
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/vistaOperador")}
+            >
+              Regresar
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </OperadorLayout>
   );
 };

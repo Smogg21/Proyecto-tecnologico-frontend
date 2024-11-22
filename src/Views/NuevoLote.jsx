@@ -1,5 +1,5 @@
 // src/Components/NuevoLote.jsx
-import  { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
@@ -11,6 +11,7 @@ import {
   Paper,
   Autocomplete,
 } from "@mui/material";
+import { OperadorLayout } from "../Layout/OperadorLayout";
 
 export const NuevoLote = () => {
   const productos = useProductos();
@@ -49,11 +50,7 @@ export const NuevoLote = () => {
     setFormValues({ ...formValues, [name]: value });
 
     // Manejar cambios en la cantidad
-    if (
-      name === "cantidad" &&
-      selectedProduct &&
-      selectedProduct.HasNumSerie
-    ) {
+    if (name === "cantidad" && selectedProduct && selectedProduct.HasNumSerie) {
       const qty = parseInt(value, 10) || 0;
       const serials = Array(qty).fill("");
       setSerialNumbers(serials);
@@ -156,135 +153,136 @@ export const NuevoLote = () => {
   };
 
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        maxWidth: "600px",
-        margin: { 
-          xs: "16px",      // Margen de 16px en pantallas extra pequeñas (móviles)
-          sm: "24px auto", // Margen superior e inferior de 24px y centrado horizontalmente en pantallas pequeñas y mayores
-        },
-        padding: "20px",
-        mt: 4,
-      }}
-    >
-      <Typography variant="h4" gutterBottom>
-        Nuevo Lote
-      </Typography>
-      {mensaje && (
-        <Box
-          sx={{
-            padding: "10px",
-            marginBottom: "15px",
-            color: mensaje.tipo === "exito" ? "green" : "red",
-            border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
-            borderRadius: "4px",
-            backgroundColor:
-              mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
-          }}
-        >
-          {mensaje.texto}
-        </Box>
-      )}
-      <form onSubmit={handleSubmit}>
-        <Autocomplete
-          options={opciones}
-          getOptionLabel={(option) => option.label}
-          value={selectedOption}
-          onChange={handleSelectChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Producto"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              required
-            />
-          )}
-        />
+    <OperadorLayout>
+      <Paper
+        elevation={3}
+        sx={{
+          maxWidth: "600px",
+          margin: {
+            xs: "16px", // Margen de 16px en pantallas extra pequeñas (móviles)
+            sm: "24px auto", // Margen superior e inferior de 24px y centrado horizontalmente en pantallas pequeñas y mayores
+          },
+          padding: "20px",
+          mt: 4,
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Nuevo Lote
+        </Typography>
+        {mensaje && (
+          <Box
+            sx={{
+              padding: "10px",
+              marginBottom: "15px",
+              color: mensaje.tipo === "exito" ? "green" : "red",
+              border: `1px solid ${mensaje.tipo === "exito" ? "green" : "red"}`,
+              borderRadius: "4px",
+              backgroundColor: mensaje.tipo === "exito" ? "#d4edda" : "#f8d7da",
+            }}
+          >
+            {mensaje.texto}
+          </Box>
+        )}
+        <form onSubmit={handleSubmit}>
+          <Autocomplete
+            options={opciones}
+            getOptionLabel={(option) => option.label}
+            value={selectedOption}
+            onChange={handleSelectChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Producto"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+              />
+            )}
+          />
 
-        <TextField
-          label="Fecha de Caducidad"
-          type="date"
-          name="fechaCaducidad"
-          value={formValues.fechaCaducidad}
-          onChange={handleInputChange}
-          InputLabelProps={{ shrink: true }}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <TextField
+            label="Fecha de Caducidad"
+            type="date"
+            name="fechaCaducidad"
+            value={formValues.fechaCaducidad}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        <TextField
-          label="Fecha de Entrada"
-          type="datetime-local"
-          name="fechaEntrada"
-          value={formValues.fechaEntrada}
-          onChange={handleInputChange}
-          InputLabelProps={{ shrink: true }}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <TextField
+            label="Fecha de Entrada"
+            type="datetime-local"
+            name="fechaEntrada"
+            value={formValues.fechaEntrada}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        <TextField
-          label="Cantidad"
-          type="number"
-          name="cantidad"
-          value={formValues.cantidad}
-          onChange={handleInputChange}
-          required
-          inputProps={{ min: 0 }}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <TextField
+            label="Cantidad"
+            type="number"
+            name="cantidad"
+            value={formValues.cantidad}
+            onChange={handleInputChange}
+            required
+            inputProps={{ min: 0 }}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        {/* Mostrar inputs de números de serie si el producto los maneja */}
-        {selectedProduct &&
-          selectedProduct.HasNumSerie &&
-          serialNumbers.length > 0 && (
-            <Box mt={2}>
-              <Typography variant="subtitle1">
-                Ingrese los números de serie:
-              </Typography>
-              {serialNumbers.map((serial, index) => (
-                <TextField
-                  key={index}
-                  label={`Número de serie ${index + 1}`}
-                  value={serial}
-                  onChange={(e) => handleSerialNumberChange(e, index)}
-                  required
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
-              ))}
-            </Box>
-          )}
+          {/* Mostrar inputs de números de serie si el producto los maneja */}
+          {selectedProduct &&
+            selectedProduct.HasNumSerie &&
+            serialNumbers.length > 0 && (
+              <Box mt={2}>
+                <Typography variant="subtitle1">
+                  Ingrese los números de serie:
+                </Typography>
+                {serialNumbers.map((serial, index) => (
+                  <TextField
+                    key={index}
+                    label={`Número de serie ${index + 1}`}
+                    value={serial}
+                    onChange={(e) => handleSerialNumberChange(e, index)}
+                    required
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
+                ))}
+              </Box>
+            )}
 
-        <TextField
-          label="Descripción"
-          name="notas"
-          rows={4}
-          multiline
-          value={formValues.notas}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-        />
+          <TextField
+            label="Descripción"
+            name="notas"
+            rows={4}
+            multiline
+            value={formValues.notas}
+            onChange={handleInputChange}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
 
-        <Box mt={2} display="flex" justifyContent="space-between">
-          <Button variant="contained" color="primary" type="submit">
-            Enviar
-          </Button>
-          <Button variant="outlined" onClick={regresar}>
-            Regresar
-          </Button>
-        </Box>
-      </form>
-    </Paper>
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Button variant="contained" color="primary" type="submit">
+              Enviar
+            </Button>
+            <Button variant="outlined" onClick={regresar}>
+              Regresar
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </OperadorLayout>
   );
 };
