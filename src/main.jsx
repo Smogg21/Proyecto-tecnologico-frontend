@@ -7,11 +7,14 @@ import { createRoot } from "react-dom/client";
 // import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import { ColorModeProvider } from './contexts/ColorModeContext.jsx';
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <ColorModeProvider>
+        <App />
+      </ColorModeProvider>
     </AuthProvider>
   </StrictMode>
 );
