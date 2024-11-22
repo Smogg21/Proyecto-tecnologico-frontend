@@ -14,6 +14,7 @@ import {
   ListItemText,
   Box,
   CssBaseline,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -60,6 +61,9 @@ export const OperadorLayout = ({ children }) => {
   const { logout } = useContext(AuthContext);
   const colorMode = useContext(ColorModeContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  
+  // Detectar si la pantalla es pequeña
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   const handleLogout = () => {
     logout();
@@ -90,17 +94,22 @@ export const OperadorLayout = ({ children }) => {
           </Typography>
           {/* Icono para alternar el modo */}
           <IconButton onClick={colorMode.toggleColorMode} color="inherit">
-               {localStorage.getItem("theme") === "dark" ? (
-                 <Brightness7 />
-               ) : (
-                 <Brightness4 />
-               )}
-             </IconButton>
+            {localStorage.getItem("theme") === "dark" ? (
+              <Brightness7 />
+            ) : (
+              <Brightness4 />
+            )}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
       {/* Drawer lateral */}
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawerState(false)}>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawerState(false)}
+        variant={isSmallScreen ? "temporary" : "persistent"}
+      >
         <Box
           sx={{ width: 250 }}
           role="presentation"
@@ -125,7 +134,15 @@ export const OperadorLayout = ({ children }) => {
       </Drawer>
 
       {/* Contenido principal */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: { xs: 1, sm: 2, md: 3 },
+          width: { xs: '100%', sm: `calc(100% - ${drawerOpen ? 250 : 0}px)` },
+          transition: 'width 0.3s',
+        }}
+      >
         {/* Spacer para el AppBar */}
         <Toolbar />
         {/* Listener para obtener notificaciones */}

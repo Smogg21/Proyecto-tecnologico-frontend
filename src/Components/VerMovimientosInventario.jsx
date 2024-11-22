@@ -34,7 +34,7 @@ export const VerMovimientosInventario = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table aria-label="Movimientos de Inventario">
         <TableHead>
           <TableRow>
@@ -54,11 +54,10 @@ export const VerMovimientosInventario = () => {
             movimientos.map((item) => (
               <TableRow
                 key={item.IdMovimiento}
-                hover // Activa el efecto hover predeterminado de MUI
+                hover
                 sx={{
-                   // Cambia el cursor al pasar por encima
                   '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Color de fondo al hacer hover
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
                   },
                 }}
               >

@@ -1,4 +1,3 @@
-
 import { useLotes } from "../Hooks/useLotes";
 import {
   Table,
@@ -33,7 +32,7 @@ export const VerInventario = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -50,11 +49,10 @@ export const VerInventario = () => {
           {Array.isArray(lotes) && lotes.length > 0 ? (
             lotes.map((item) => (
               <TableRow key={item.IdLote}
-              hover // Activa el efecto hover predeterminado de MUI
+                hover
                 sx={{
-                   // Cambia el cursor al pasar por encima
                   '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Color de fondo al hacer hover
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
                   },
                 }}
               >

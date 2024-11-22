@@ -17,10 +17,11 @@ export const VistaMovimientos = () => {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
+          flexDirection={{ xs: "column", sm: "row" }}
           mb={2}
         >
           <Typography variant="h4">Movimientos de Inventario</Typography>
-          <Button variant="contained" color="primary" onClick={regresar}>
+          <Button variant="contained" color="primary" onClick={regresar}  sx={{ mt: { xs: 2, sm: 0 } }}>
             Regresar
           </Button>
         </Box>
