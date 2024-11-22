@@ -1,12 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'; 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 import { AuthContext } from '../contexts/AuthContext';
-import { truncate } from '../utils/truncate';
+import { Box, Typography, CircularProgress, useTheme, useMediaQuery } from '@mui/material';
+
+const truncate = (input, maxLength) => {
+  if (input.length > maxLength) {
+    return input.substring(0, maxLength) + '...';
+  }
+  return input;
+};
 
 export const ProductosBajoStockMinimo = () => {
   const [data, setData] = useState([]);
   const { auth } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -29,6 +39,7 @@ export const ProductosBajoStockMinimo = () => {
     // Escuchar el evento 'productosBajoStockMinimoActualizados' (si lo implementas en el backend)
     socket.on('productosBajoStockMinimoActualizados', (newData) => {
       setData(newData);
+      setLoading(false);
     });
 
     const fetchData = async () => {
@@ -45,6 +56,8 @@ export const ProductosBajoStockMinimo = () => {
         setData(jsonData);
       } catch (error) {
         console.error('Error al obtener datos:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -54,17 +67,28 @@ export const ProductosBajoStockMinimo = () => {
     };
   }, [auth]); 
 
-  // Manejo de datos vacíos
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height={isSmallScreen ? 300 : 400}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (data.length === 0) {
-    return <p>No hay productos por debajo del stock mínimo.</p>;
+    return (
+      <Typography variant="body1">
+        No hay productos por debajo del stock mínimo.
+      </Typography>
+    );
   }
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <ResponsiveContainer>
+    <Box width="100%" height={isSmallScreen ? 400 : 500} overflow="auto">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart 
           data={data} 
-          margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
+          margin={{ top: 20, right: 30, left: 20, bottom: 100 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
@@ -72,18 +96,20 @@ export const ProductosBajoStockMinimo = () => {
             angle={-45} 
             textAnchor="end" 
             interval={0} 
-            height={60} 
-            tickFormatter={(tick) => truncate(tick, 15)} // Trunca nombres largos
+            height={isSmallScreen ? 80 : 100} 
+            tick={{ fontSize: isSmallScreen ? 10 : 12 }}
+            tickFormatter={(tick) => truncate(tick, 15)}
           />
           <YAxis />
           <Tooltip 
             formatter={(value, name) => [value, name === 'Diferencia' ? 'Cantidad Faltante' : name]}
           />
+          <Legend />
           <Bar dataKey="StockMinimo" fill="#8884d8" name="Stock Mínimo" />
           <Bar dataKey="StockActual" fill="#82ca9d" name="Stock Actual" />
           <Bar dataKey="Diferencia" fill="#FF0000" name="Cantidad Faltante" />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };

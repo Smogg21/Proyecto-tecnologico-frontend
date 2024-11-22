@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'; 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { AuthContext } from '../contexts/AuthContext';
+import { Box, Typography, CircularProgress, useTheme, useMediaQuery } from '@mui/material';
 
 const truncate = (input, maxLength) => {
   if (input.length > maxLength) {
@@ -13,6 +14,9 @@ const truncate = (input, maxLength) => {
 export const LotesActuales = () => {
   const [data, setData] = useState([]);
   const { auth } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -39,6 +43,7 @@ export const LotesActuales = () => {
         CantidadUsada: item.CantidadInicial - item.CantidadActual,
       }));
       setData(processedData);
+      setLoading(false);
     });
 
     const fetchData = async () => {
@@ -60,6 +65,8 @@ export const LotesActuales = () => {
         setData(processedData);
       } catch (error) {
         console.error('Error al obtener datos:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -69,29 +76,44 @@ export const LotesActuales = () => {
     };
   }, [auth]); 
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height={isSmallScreen ? 300 : 400}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Typography variant="body1">
+        No hay datos disponibles para mostrar el gráfico.
+      </Typography>
+    );
+  }
+
   return (
-    <div style={{ overflowX: 'scroll' }}>
-      <BarChart 
-        width={Math.max(600, data.length * 80)} // Ajusta el ancho dinámicamente
-        height={400} 
-        data={data} 
-        margin={{ top: 20, right: 30, left: 20, bottom: 100 }} // Aumenta el margen inferior para etiquetas rotadas
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="Nombre" 
-          angle={-45} 
-          textAnchor="end" 
-          height={100} 
-          tick={{ fontSize: 12 }}
-          tickFormatter={(tick) => truncate(tick, 15)} // Trunca nombres largos a 15 caracteres
-        />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="CantidadUsada" stackId="a" fill="#8884d8" name="Cantidad Usada" />
-        <Bar dataKey="CantidadActual" stackId="a" fill="#82ca9d" name="Cantidad Actual" />
-      </BarChart>
-    </div>
+    <Box width="100%" height={isSmallScreen ? 300 : 400} overflow="auto">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart 
+          data={data} 
+          margin={{ top: 20, right: 30, left: 20, bottom: 100 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis 
+            dataKey="Nombre" 
+            angle={-45} 
+            textAnchor="end" 
+            height={isSmallScreen ? 80 : 100} 
+            tick={{ fontSize: isSmallScreen ? 10 : 12 }}
+            tickFormatter={(tick) => truncate(tick, 15)}
+          />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="CantidadUsada" stackId="a" fill="#8884d8" name="Cantidad Usada" />
+          <Bar dataKey="CantidadActual" stackId="a" fill="#82ca9d" name="Cantidad Actual" />
+        </BarChart>
+      </ResponsiveContainer>
+    </Box>
   );
-}
+};

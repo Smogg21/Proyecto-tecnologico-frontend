@@ -1,22 +1,23 @@
-// Importar las librerías necesarias
 import { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'; 
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { AuthContext } from '../contexts/AuthContext';
 import { format, parseISO } from 'date-fns';
+import { Box, Typography, CircularProgress, useTheme, useMediaQuery } from '@mui/material';
 
 export const EntradasXDia = () => {
   const [data, setData] = useState([]);
   const { auth } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
-    // Verifica si el usuario está autenticado
     if (!auth.isAuthenticated) {
       console.error('Usuario no autenticado');
       return;
     }
 
-    // Conectar al servidor de Socket.IO con el token JWT
     const socket = io('http://localhost:5000', {
       auth: {
         token: auth.token,
@@ -25,22 +26,20 @@ export const EntradasXDia = () => {
       withCredentials: true,
     });
 
-    // Manejo de errores de autenticación en Socket.IO
     socket.on('connect_error', (err) => {
       console.error('Error de conexión:', err.message);
     });
 
-    // Escuchar el evento 'entradasxdia'
     socket.on('entradasxdia', (newData) => {
       setData(newData);
+      setLoading(false);
     });
 
-    // Obtener datos iniciales
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/charts/entradasxdia', {
           headers: {
-            Authorization: `Bearer ${auth.token}`, // Incluir el token en el encabezado
+            Authorization: `Bearer ${auth.token}`,
           },
         });
         if (!response.ok) {
@@ -50,24 +49,36 @@ export const EntradasXDia = () => {
         setData(jsonData);
       } catch (error) {
         console.error('Error al obtener datos:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
 
-    // Limpiar la conexión cuando el componente se desmonte
     return () => {
       socket.disconnect();
     };
   }, [auth]); 
 
-  // Manejo de datos vacíos
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height={400}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (data.length === 0) {
-    return <p>No hay datos disponibles para mostrar el gráfico.</p>;
+    return (
+      <Typography variant="body1">
+        No hay datos disponibles para mostrar el gráfico.
+      </Typography>
+    );
   }
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <ResponsiveContainer>
+    <Box width="100%" height={isSmallScreen ? 300 : 400}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 70 }}>
           <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
           <XAxis 
@@ -78,7 +89,7 @@ export const EntradasXDia = () => {
             }}
             angle={-45}
             textAnchor="end"
-            interval={0} // Mostrar todas las etiquetas
+            interval={0}
             height={60}
           />
           <YAxis />
@@ -88,6 +99,6 @@ export const EntradasXDia = () => {
           <Line type="monotone" dataKey="TotalCantidad" stroke="#82ca9d" name="Total Entradas" />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };

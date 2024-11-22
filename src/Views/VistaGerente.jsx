@@ -1,3 +1,5 @@
+// src/Views/VistaGerente.jsx
+
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -9,50 +11,82 @@ import { ProductosPorVencer } from "../Charts/ProductosPorVencer";
 import { ProductosBajoStockMinimo } from "../Charts/ProductosBajoStockMinimo";
 import { Kardex } from "../Components/Kardex";
 import NotificationListener from "../Components/NotificationListener";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography, Button, Grid } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { ColorModeContext } from "../contexts/ColorModeContext";
 
-// eslint-disable-next-line react/prop-types
-export const VistaGerente = ({ toggleColorMode }) => {
+export const VistaGerente = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+  const colorMode = useContext(ColorModeContext);
+
   const handleLogout = () => {
     logout();
     navigate("/");
   };
+
   return (
-    <Box display={"flex"} flexDirection={"column"}>
-      {/* Botón para alternar el modo */}
-      <Box alignSelf="flex-end">
-        <IconButton onClick={toggleColorMode} color="inherit">
-          {/* Muestra el icono basado en el tema actual */}
-          {localStorage.getItem("theme") === "dark" ? (
-            <Brightness7 />
-          ) : (
-            <Brightness4 />
-          )}
+    <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <IconButton onClick={colorMode.toggleColorMode} color="inherit">
+          {localStorage.getItem("theme") === "dark" ? <Brightness7 /> : <Brightness4 />}
         </IconButton>
       </Box>
 
-      <div>
-        <NotificationListener />
-        <h1>VistaGerente</h1>
-        <Kardex />
-        <h3>Movimientos totales por día</h3>
-        <MovimientosXDia />
-        <h3>Salidas totales por día</h3>
-        <SalidasXDia />
-        <h3>Entradas totales por día</h3>
-        <EntradasXDia />
-        <h3>Lotes actuales</h3>
-        <LotesActuales />
-        <h3>Productos por vencer</h3>
-        <ProductosPorVencer />
-        <h3>Productos bajo stock mínimo</h3>
-        <ProductosBajoStockMinimo />
+      <NotificationListener />
 
-        <button onClick={handleLogout}>Cerrar Sesión</button>
-      </div>
+      <Typography variant="h4" gutterBottom>
+        Vista Gerente
+      </Typography>
+
+      <Kardex />
+
+      {/* Usar Grid para organizar los gráficos */}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Movimientos totales por día
+          </Typography>
+          <MovimientosXDia />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Salidas totales por día
+          </Typography>
+          <SalidasXDia />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Entradas totales por día
+          </Typography>
+          <EntradasXDia />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Lotes actuales
+          </Typography>
+          <LotesActuales />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Productos por vencer
+          </Typography>
+          <ProductosPorVencer />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Productos bajo stock mínimo
+          </Typography>
+          <ProductosBajoStockMinimo />
+        </Grid>
+      </Grid>
+
+      {/* Botón para cerrar sesión */}
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button variant="contained" color="primary" onClick={handleLogout}>
+          Cerrar Sesión
+        </Button>
+      </Box>
     </Box>
   );
 };
