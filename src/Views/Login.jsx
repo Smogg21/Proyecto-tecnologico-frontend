@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 // src/Views/Login.js
 import { useState, useContext } from "react";
 import axios from "axios";
@@ -16,14 +15,16 @@ import {
   Typography,
 } from "@mui/material";
 import { Brightness4, Brightness7, Person, Lock } from "@mui/icons-material";
+import { ColorModeContext } from "../contexts/ColorModeContext";
 
-export const Login = ({ toggleColorMode }) => {
+export const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [Usuario, setUsuario] = useState("");
   const [Contraseña, setContraseña] = useState("");
   const [error, setError] = useState("");
+  const colorMode = useContext(ColorModeContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,8 +66,7 @@ export const Login = ({ toggleColorMode }) => {
     <Box display={"flex"} flexDirection={"column"}>
       {/* Botón para alternar el modo */}
       <Box alignSelf="flex-end">
-        <IconButton onClick={toggleColorMode} color="inherit">
-          {/* Muestra el icono basado en el tema actual */}
+        <IconButton onClick={colorMode.toggleColorMode} color="inherit">
           {localStorage.getItem("theme") === "dark" ? (
             <Brightness7 />
           ) : (
