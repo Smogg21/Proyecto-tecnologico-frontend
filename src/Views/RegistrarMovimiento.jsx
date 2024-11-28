@@ -25,7 +25,6 @@ export const RegistrarMovimiento = () => {
   const [mensaje, setMensaje] = useState(null);
   const [serialNumbers, setSerialNumbers] = useState([]);
   const [selectedSerialNumber, setSelectedSerialNumber] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [stockStopActive, setStockStopActive] = useState(false);
 
   const navigate = useNavigate();

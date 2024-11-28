@@ -23,7 +23,6 @@ export const NuevoLote = () => {
     HasNumSerie: producto.HasNumSerie,
   }));
   const { auth } = useContext(AuthContext);
-  // eslint-disable-next-line no-unused-vars
   const [stockStopActive, setStockStopActive] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
