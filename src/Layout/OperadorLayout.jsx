@@ -1,4 +1,5 @@
-import  { useState, useContext } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import NotificationListener from "../Components/NotificationListener";
@@ -24,10 +25,14 @@ import {
   ExitToApp as ExitToAppIcon,
   Brightness4,
   Brightness7,
+  Stop as StopIcon,
+  PlayArrow as PlayArrowIcon,
 } from "@mui/icons-material";
 import { ColorModeContext } from "../contexts/ColorModeContext";
+import axios from "axios";
+import io from "socket.io-client";
 
-const menuItems = (navigate) => [
+const menuItems = (navigate, stockStopActive, toggleStockStop) => [
   {
     text: "Ver Inventario",
     icon: <InventoryIcon />,
@@ -53,6 +58,11 @@ const menuItems = (navigate) => [
     icon: <AddBoxIcon />,
     onClick: () => navigate("/nuevoProducto"),
   },
+  {
+    text: stockStopActive ? "Desactivar Parada de stock" : "Activar Parada de stock",
+    icon: stockStopActive ? <PlayArrowIcon /> : <StopIcon />,
+    onClick: toggleStockStop,
+  },
 ];
 
 // eslint-disable-next-line react/prop-types
@@ -61,9 +71,10 @@ export const OperadorLayout = ({ children }) => {
   const { logout } = useContext(AuthContext);
   const colorMode = useContext(ColorModeContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
+  const [stockStopActive, setStockStopActive] = useState(false);
+
   // Detectar si la pantalla es pequeña
-  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const handleLogout = () => {
     logout();
@@ -72,6 +83,60 @@ export const OperadorLayout = ({ children }) => {
 
   const toggleDrawerState = (open) => () => {
     setDrawerOpen(open);
+  };
+
+  useEffect(() => {
+    // Obtener el estado actual de la Parada de stock
+    const fetchStockStopStatus = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/stock-stop/status"
+        );
+        setStockStopActive(response.data.stockStopActive);
+      } catch (err) {
+        console.error("Error al obtener el estado de la Parada de stock", err);
+      }
+    };
+
+    fetchStockStopStatus();
+
+    // Configurar Socket.IO para escuchar cambios en el estado
+    const socket = io("http://localhost:5000", {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
+
+    socket.on("stockStopActivated", (data) => {
+      setStockStopActive(true);
+    });
+
+    socket.on("stockStopDeactivated", (data) => {
+      setStockStopActive(false);
+    });
+
+    // Limpiar al desmontar el componente
+    return () => {
+      socket.off("stockStopActivated");
+      socket.off("stockStopDeactivated");
+      socket.disconnect();
+    };
+  }, []);
+
+
+  const toggleStockStop = async () => {
+    try {
+      if (!stockStopActive) {
+        // Activar Parada de stock
+        await axios.post('http://localhost:5000/api/stock-stop/activate');
+      } else {
+        // Desactivar Parada de stock
+        await axios.post('http://localhost:5000/api/stock-stop/deactivate');
+      }
+      // El estado se actualizará a través del socket
+    } catch (err) {
+      console.error('Error al cambiar el estado de la Parada de stock', err);
+    }
   };
 
   return (
@@ -117,7 +182,7 @@ export const OperadorLayout = ({ children }) => {
           onKeyDown={toggleDrawerState(false)}
         >
           <List>
-            {menuItems(navigate).map((item, index) => (
+            {menuItems(navigate, stockStopActive, toggleStockStop).map((item, index) => (
               <ListItem button key={index} onClick={item.onClick}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
@@ -139,8 +204,8 @@ export const OperadorLayout = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: { xs: 1, sm: 2, md: 3 },
-          width: { xs: '100%', sm: `calc(100% - ${drawerOpen ? 250 : 0}px)` },
-          transition: 'width 0.3s',
+          width: { xs: "100%", sm: `calc(100% - ${drawerOpen ? 250 : 0}px)` },
+          transition: "width 0.3s",
         }}
       >
         {/* Spacer para el AppBar */}

@@ -1,5 +1,5 @@
 // src/Components/NuevoLote.jsx
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useProductos } from "../Hooks/useProductos";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
@@ -12,6 +12,8 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { OperadorLayout } from "../Layout/OperadorLayout";
+import axios from "axios";
+import io from "socket.io-client";
 
 export const NuevoLote = () => {
   const productos = useProductos();
@@ -21,6 +23,8 @@ export const NuevoLote = () => {
     HasNumSerie: producto.HasNumSerie,
   }));
   const { auth } = useContext(AuthContext);
+  // eslint-disable-next-line no-unused-vars
+  const [stockStopActive, setStockStopActive] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -152,8 +156,55 @@ export const NuevoLote = () => {
     }
   };
 
+  useEffect(() => {
+    // Obtener el estado actual de la Parada de stock
+    const fetchStockStopStatus = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/stock-stop/status"
+        );
+        setStockStopActive(response.data.stockStopActive);
+      } catch (err) {
+        console.error("Error al obtener el estado de la Parada de stock", err);
+      }
+    };
+
+    fetchStockStopStatus();
+
+    // Configurar Socket.IO para escuchar cambios
+    const socket = io("http://localhost:5000", {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
+
+    socket.on("stockStopActivated", () => {
+      setStockStopActive(true);
+    });
+
+    socket.on("stockStopDeactivated", () => {
+      setStockStopActive(false);
+    });
+
+    return () => {
+      socket.off("stockStopActivated");
+      socket.off("stockStopDeactivated");
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <OperadorLayout>
+      {stockStopActive && (
+        <Typography
+          variant="h6"
+          align="center"
+          gutterBottom
+          sx={{ color: "error.main" }}
+        >
+          ¡ATENCIÓN! La Parada de stock está activada
+        </Typography>
+      )}
       <Paper
         elevation={3}
         sx={{
