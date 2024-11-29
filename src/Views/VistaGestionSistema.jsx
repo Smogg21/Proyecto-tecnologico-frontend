@@ -11,9 +11,21 @@ import {
   ListItemText,
   Box,
   Alert,
+  ListItemButton,   // Import ListItemButton
+  ListItemIcon,     // Import ListItemIcon
 } from "@mui/material";
-import { Menu as MenuIcon, Brightness4, Brightness7, Category, Edit, PersonAdd, ManageAccounts, Password, ArrowBack } from "@mui/icons-material";
-import PropTypes from 'prop-types';
+import { 
+  Menu as MenuIcon, 
+  Brightness4, 
+  Brightness7, 
+  Category, 
+  Edit, 
+  PersonAdd, 
+  ManageAccounts, 
+  Password, 
+  ArrowBack 
+} from "@mui/icons-material";
+
 import { ColorModeContext } from "../contexts/ColorModeContext";
 
 export const VistaGestionSistema = () => {
@@ -101,15 +113,13 @@ export const VistaGestionSistema = () => {
         >
           <List>
             {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                onClick={() => navigate(item.path)}
-              >
-                <IconButton size="small" sx={{ mr: 2 }}>
-                  {item.icon}
-                </IconButton>
-                <ListItemText primary={item.text} />
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton onClick={() => navigate(item.path)}>
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
               </ListItem>
             ))}
           </List>
@@ -133,8 +143,4 @@ export const VistaGestionSistema = () => {
       </Box>
     </Box>
   );
-};
-
-VistaGestionSistema.propTypes = {
-  toggleColorMode: PropTypes.func.isRequired
 };

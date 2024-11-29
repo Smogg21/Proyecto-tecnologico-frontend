@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import {
@@ -13,6 +12,7 @@ import {
   ListItemText,
   Box,
   ListItemIcon,
+  ListItemButton, // Import ListItemButton
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -26,9 +26,8 @@ import {
 import { ColorModeContext } from "../contexts/ColorModeContext";
 
 export const VistaAdministrador = () => {
-  const { auth } = useContext(AuthContext);
+  const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
   const colorMode = useContext(ColorModeContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -83,20 +82,20 @@ export const VistaAdministrador = () => {
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
           <List>
             {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                onClick={() => navigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton onClick={() => navigate(item.path)}>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
               </ListItem>
             ))}
-            <ListItem button onClick={handleLogout}>
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Cerrar Sesión" />
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLogout}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Cerrar Sesión" />
+              </ListItemButton>
             </ListItem>
           </List>
         </Box>
@@ -105,7 +104,9 @@ export const VistaAdministrador = () => {
       {/* Contenido principal */}
       <Box p={2}>
         <Typography variant="h4" align="center" gutterBottom>
-        {auth.isAuthenticated && auth.user ? `Bienvenido, administrador "${auth.user.Usuario}"` : 'Bienvenido, Administrador'}
+          {auth.isAuthenticated && auth.user
+            ? `Bienvenido, administrador "${auth.user.Usuario}"`
+            : "Bienvenido, Administrador"}
         </Typography>
         {/* Puedes agregar más contenido aquí */}
       </Box>
