@@ -1,5 +1,8 @@
 # React + Vite
 
+El proyecto se encuentra desplegado actualmente en vercel en el siguiente link:
+https://proyecto-tecnologico-frontend-3f80vy7x3.vercel.app/vistaAdministrador
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
