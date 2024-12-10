@@ -18,6 +18,7 @@ export const NuevoUsuario = () => {
   const { roles, loading } = useRoles();
   const navigate = useNavigate();
   const theme = useTheme();
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const opcionesRoles = roles.map((rol) => ({
     value: rol.IdRol,
@@ -82,7 +83,7 @@ export const NuevoUsuario = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/nuevoUsuario", {
+      const response = await axios.post(`${apiUrl}/api/nuevoUsuario`, {
         ...formValues,
         IdRol: selectedRol.value,
       });

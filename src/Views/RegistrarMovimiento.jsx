@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // src/Components/RegistrarMovimiento.jsx
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +27,7 @@ export const RegistrarMovimiento = () => {
   const [serialNumbers, setSerialNumbers] = useState([]);
   const [selectedSerialNumber, setSelectedSerialNumber] = useState(null);
   const [stockStopActive, setStockStopActive] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
@@ -54,7 +56,7 @@ export const RegistrarMovimiento = () => {
     const fetchStockStopStatus = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/stock-stop/status"
+          `${apiUrl}/api/stock-stop/status`
         );
         setStockStopActive(response.data.stockStopActive);
       } catch (err) {
@@ -94,7 +96,7 @@ export const RegistrarMovimiento = () => {
           tipoMovimiento.value === "Salida" ? "Activo" : "Inactivo";
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/lotes/${selectedLote.value}/serial-numbers`,
+            `${apiUrl}/api/lotes/${selectedLote.value}/serial-numbers`,
             {
               params: { estado },
             }
@@ -177,7 +179,7 @@ export const RegistrarMovimiento = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/movimientos", {
+      const response = await fetch(`${apiUrl}/api/movimientos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

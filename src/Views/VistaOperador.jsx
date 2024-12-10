@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { OperadorLayout } from "../Layout/OperadorLayout";
 import { Typography } from "@mui/material";
 import { useContext, useState, useEffect } from 'react';
@@ -10,12 +11,13 @@ export const VistaOperador = () => {
   const { auth } = useContext(AuthContext);
 
   const [stockStopActive, setStockStopActive] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL
 
 useEffect(() => {
   // Obtener el estado actual de la Parada de stock
   const fetchStockStopStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/stock-stop/status');
+      const response = await axios.get(`${apiUrl}/api/stock-stop/status`);
       setStockStopActive(response.data.stockStopActive);
     } catch (err) {
       console.error('Error al obtener el estado de la Parada de stock', err);

@@ -42,13 +42,14 @@ export const EditarUsuario = () => {
   });
 
   const [mensaje, setMensaje] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const handleUsuarioSelectChange = async (selected) => {
     setSelectedUsuario(selected);
     // Obtener datos del usuario seleccionado
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/usuarios/${selected.value}`
+        `${apiUrl}/api/usuarios/${selected.value}`
       );
       const userData = response.data;
       setFormValues({
@@ -125,7 +126,7 @@ export const EditarUsuario = () => {
     // Enviar solicitud PUT para actualizar el usuario
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/usuarios/${selectedUsuario.value}`,
+        `${apiUrl}/api/usuarios/${selectedUsuario.value}`,
         {
           usuario: formValues.usuario,
           nombre: formValues.nombre,

@@ -17,6 +17,7 @@ export const NuevaCategoria = () => {
     nombre: "",
     descripcion: "",
   });
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const [mensaje, setMensaje] = useState(null);
 
@@ -42,7 +43,7 @@ export const NuevaCategoria = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/categorias", {
+      const response = await axios.post(`${apiUrl}/api/categorias`, {
         Nombre: formValues.nombre,
         Descripcion: formValues.descripcion,
       });

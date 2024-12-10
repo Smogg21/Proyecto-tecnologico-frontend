@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 // src/Components/Kardex.jsx
 
@@ -42,6 +43,7 @@ import {
 
 export const Kardex = () => {
   const { auth } = useContext(AuthContext);
+  const apiUrl = import.meta.env.VITE_API_URL
   const [productos, setProductos] = useState([]);
   const [selectedProducto, setSelectedProducto] = useState('');
   const [kardexData, setKardexData] = useState([]);
@@ -66,7 +68,7 @@ export const Kardex = () => {
     const fetchProductos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/api/productos', {
+        const response = await axios.get(`${apiUrl}/api/productos`, {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },
@@ -92,7 +94,7 @@ export const Kardex = () => {
       if (start) params.startDate = start.toISOString();
 
       const response = await axios.get(
-        `http://localhost:5000/api/productos/${productoId}/saldoInicial`,
+        `${apiUrl}/api/productos/${productoId}/saldoInicial`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -118,7 +120,7 @@ export const Kardex = () => {
 
       const [movimientosResponse, saldoResponse] = await Promise.all([
         axios.get(
-          `http://localhost:5000/api/productos/${productoId}/movimientos`,
+          `${apiUrl}/api/productos/${productoId}/movimientos`,
           {
             headers: {
               Authorization: `Bearer ${auth.token}`,
@@ -181,7 +183,7 @@ export const Kardex = () => {
       console.log('Fetching Kardex Data with params:', params); // Debug
 
       const response = await axios.get(
-        `http://localhost:5000/api/productos/${productoId}/kardex`,
+        `${apiUrl}/api/productos/${productoId}/kardex`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,

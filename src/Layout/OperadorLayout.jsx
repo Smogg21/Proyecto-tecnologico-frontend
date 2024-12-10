@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -75,6 +76,7 @@ export const OperadorLayout = ({ children }) => {
 
   // Detectar si la pantalla es pequeña
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const handleLogout = () => {
     logout();
@@ -90,7 +92,7 @@ export const OperadorLayout = ({ children }) => {
     const fetchStockStopStatus = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/stock-stop/status"
+          `${apiUrl}/api/stock-stop/status`
         );
         setStockStopActive(response.data.stockStopActive);
       } catch (err) {
@@ -128,10 +130,10 @@ export const OperadorLayout = ({ children }) => {
     try {
       if (!stockStopActive) {
         // Activar Parada de stock
-        await axios.post('http://localhost:5000/api/stock-stop/activate');
+        await axios.post(`${apiUrl}/api/stock-stop/activate`);
       } else {
         // Desactivar Parada de stock
-        await axios.post('http://localhost:5000/api/stock-stop/deactivate');
+        await axios.post(`${apiUrl}/api/stock-stop/deactivate`);
       }
       // El estado se actualizará a través del socket
     } catch (err) {

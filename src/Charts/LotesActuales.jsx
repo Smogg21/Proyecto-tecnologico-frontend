@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client'; 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
@@ -17,6 +18,7 @@ export const LotesActuales = () => {
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const apiUrl = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -48,7 +50,7 @@ export const LotesActuales = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/charts/lotesactuales', {
+        const response = await fetch(`${apiUrl}/api/charts/lotesactuales`, {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },

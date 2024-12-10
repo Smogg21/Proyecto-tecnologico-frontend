@@ -18,6 +18,7 @@ import { OperadorLayout } from "../Layout/OperadorLayout";
 export const NuevoProducto = () => {
   const { categorias, loading, error: categoriasError } = useCategorias();
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const opcionesCategorias = categorias.map((categoria) => ({
     value: categoria.IdCategoria,
@@ -97,7 +98,7 @@ export const NuevoProducto = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/productos", {
+      const response = await fetch(`${apiUrl}/api/productos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

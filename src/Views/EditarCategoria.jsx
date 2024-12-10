@@ -34,13 +34,14 @@ export const EditarCategoria = () => {
   });
 
   const [mensaje, setMensaje] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleCategoriaSelectChange = async (selected) => {
     setSelectedCategoria(selected);
     // Obtener datos de la categoría seleccionada
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/categorias/${selected.value}`
+        `${apiUrl}/api/categorias/${selected.value}`
       );
       const categoriaData = response.data;
       setFormValues({
@@ -82,7 +83,7 @@ export const EditarCategoria = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/categorias/${selectedCategoria.value}`,
+        `${apiUrl}/api/categorias/${selectedCategoria.value}`,
         {
           Nombre: formValues.nombre,
           Descripcion: formValues.descripcion,

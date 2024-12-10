@@ -25,12 +25,13 @@ export const Login = () => {
   const [Contraseña, setContraseña] = useState("");
   const [error, setError] = useState("");
   const colorMode = useContext(ColorModeContext);
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
+      const response = await axios.post(`${apiUrl}/api/login`, {
         Usuario,
         Contraseña,
       });

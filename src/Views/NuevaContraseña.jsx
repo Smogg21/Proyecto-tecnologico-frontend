@@ -28,6 +28,7 @@ export const NuevaContraseña = () => {
   const [NuevaContraseña, setNuevaContraseña] = useState("");
   const [ConfirmarContraseña, setConfirmarContraseña] = useState("");
   const [mensaje, setMensaje] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const handleUsuarioSelectChange = (selected) => {
     setSelectedUsuario(selected);
@@ -55,7 +56,7 @@ export const NuevaContraseña = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/restablecerPassword",
+        `${apiUrl}/api/restablecerPassword`,
         {
           Usuario: selectedUsuario.value,
           NuevaContraseña,

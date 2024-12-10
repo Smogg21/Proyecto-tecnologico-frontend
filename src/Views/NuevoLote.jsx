@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // src/Components/NuevoLote.jsx
 import { useContext, useState, useEffect } from "react";
 import { useProductos } from "../Hooks/useProductos";
@@ -38,6 +39,7 @@ export const NuevoLote = () => {
     navigate("/VistaOperador");
   };
   const [mensaje, setMensaje] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const handleSelectChange = (event, value) => {
     setSelectedOption(value);
@@ -115,7 +117,7 @@ export const NuevoLote = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/lotes", {
+      const response = await fetch(`${apiUrl}/api/lotes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +162,7 @@ export const NuevoLote = () => {
     const fetchStockStopStatus = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/stock-stop/status"
+          `${apiUrl}/api/stock-stop/status`
         );
         setStockStopActive(response.data.stockStopActive);
       } catch (err) {
