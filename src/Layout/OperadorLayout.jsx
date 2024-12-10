@@ -103,7 +103,7 @@ export const OperadorLayout = ({ children }) => {
     fetchStockStopStatus();
 
     // Configurar Socket.IO para escuchar cambios en el estado
-    const socket = io("http://localhost:5000", {
+    const socket = io(`${apiUrl}`, {
       auth: {
         token: localStorage.getItem("token"),
       },

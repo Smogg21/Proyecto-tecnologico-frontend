@@ -27,7 +27,7 @@ useEffect(() => {
   fetchStockStopStatus();
 
   // Configurar Socket.IO para escuchar cambios
-  const socket = io('http://localhost:5000', {
+  const socket = io(`${apiUrl}`, {
     auth: {
       token: localStorage.getItem('token'),
     },

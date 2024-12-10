@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Components/NotificationListener.jsx
 import { useEffect, useContext, useRef } from 'react';
 import { io } from 'socket.io-client';
@@ -7,6 +8,7 @@ import { toast } from 'react-toastify';
 const NotificationListener = () => {
   const { auth } = useContext(AuthContext);
   const notifiedProductsRef = useRef({});
+  const apiUrl = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -14,7 +16,7 @@ const NotificationListener = () => {
       return;
     }
 
-    const socket = io('http://localhost:5000', {
+    const socket = io(`${apiUrl}`, {
       auth: {
         token: auth.token,
       },

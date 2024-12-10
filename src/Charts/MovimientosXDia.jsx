@@ -28,7 +28,7 @@ export const MovimientosXDia = () => {
       return;
     }
 
-    const socket = io("http://localhost:5000", {
+    const socket = io(`${apiUrl}`, {
       auth: {
         token: auth.token,
       },
