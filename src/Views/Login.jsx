@@ -13,6 +13,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Snackbar,
 } from "@mui/material";
 import { Brightness4, Brightness7, Person, Lock } from "@mui/icons-material";
 import { ColorModeContext } from "../contexts/ColorModeContext";
@@ -27,11 +28,13 @@ export const Login = () => {
   const colorMode = useContext(ColorModeContext);
   const apiUrl = import.meta.env.VITE_API_URL
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    setOpenSnackbar(true);
     try {
       const response = await axios.post(`${apiUrl}/api/login`, {
         Usuario,
@@ -64,6 +67,7 @@ export const Login = () => {
       }
     } finally {
       setLoading(false);
+      setOpenSnackbar(false);
     }
   };
 
@@ -156,6 +160,17 @@ export const Login = () => {
           </Grid>
         </Box>
       </Box>
+      <Snackbar
+        open={openSnackbar && loading}
+        message="Si es el primer inicio de sesión del día, puede demorar unos segundos mientras el servidor se inicializa."
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ 
+          '& .MuiSnackbarContent-root': {
+            backgroundColor: 'info.main',
+            color: 'white'
+          }
+        }}
+      />
     </Box>
   );
 };
