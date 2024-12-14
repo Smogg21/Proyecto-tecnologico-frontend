@@ -26,10 +26,12 @@ export const Login = () => {
   const [error, setError] = useState("");
   const colorMode = useContext(ColorModeContext);
   const apiUrl = import.meta.env.VITE_API_URL
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const response = await axios.post(`${apiUrl}/api/login`, {
         Usuario,
@@ -60,6 +62,8 @@ export const Login = () => {
       } else {
         setError("Credenciales inválidas o error en el servidor.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,8 +144,8 @@ export const Login = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button fullWidth variant="contained" type="submit">
-                Iniciar Sesión
+              <Button fullWidth variant="contained" type="submit" disabled={loading}>
+                {loading ? "Cargando..." : "Iniciar Sesión"}
               </Button>
             </Grid>
             {error && (
