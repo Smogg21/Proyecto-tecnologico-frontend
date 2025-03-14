@@ -1,5 +1,8 @@
 # React + Vite
 
+Video de sustentación:
+https://drive.google.com/file/d/1bxTpuYmSgr7L-6kJToRCyLRx50islEut/view?usp=sharing
+
 El proyecto se encuentra desplegado actualmente en vercel en el siguiente link:
 https://proyecto-tecnologico-frontend.vercel.app/
 
